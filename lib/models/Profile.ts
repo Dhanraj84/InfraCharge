@@ -1,20 +1,16 @@
-import { Schema, model, models, Types } from "mongoose";
+// SQL-safe Profile model placeholder (no mongoose)
 
 export interface Profile {
-  _id?: string;
-  userId: string;                      // The logged-in user's ID
-  selectedVehicle?: Types.ObjectId;    // Reference to the Vehicle collection
+  id?: number;
+  userId: string;
+  selectedVehicleId?: number;
 }
 
-const ProfileSchema = new Schema<Profile>(
-  {
-    userId: { type: String, required: true, unique: true },
-    selectedVehicle: { type: Schema.Types.ObjectId, ref: "Vehicle" },
-  },
-  {
-    timestamps: true,
-    versionKey: false,
-  }
-);
+/**
+ * This default export exists only to keep
+ * existing imports working.
+ * Actual DB operations are handled via SQL elsewhere.
+ */
+const ProfileModel = {} as unknown as Profile;
 
-export default models.Profile || model<Profile>("Profile", ProfileSchema);
+export default ProfileModel;
