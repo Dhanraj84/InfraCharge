@@ -1,0 +1,115 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ===============================
+   GLOBAL THEME VARIABLES
+   (CHANGE ONLY HERE IN FUTURE)
+================================ */
+
+:root {
+  --infracharge-red: #ff4d4f;
+
+  --bg-main: #0b0b14;
+  --bg-card: #121222;
+
+  --text-main: #e5e7eb;
+  --text-muted: #9ca3af;
+
+  --border-color: rgba(255, 255, 255, 0.12);
+
+  color-scheme: dark;
+}
+
+/* ===============================
+   GLOBAL BASE OVERRIDES
+   (THIS IS THE KEY PART)
+================================ */
+
+@layer base {
+  html,
+  body {
+    height: 100%;
+    background-color: var(--bg-main) !important;
+    color: var(--text-main) !important;
+  }
+
+  body {
+    min-height: 100vh;
+    background:
+      radial-gradient(
+        1200px 600px at 50% 20%,
+        rgba(120, 60, 120, 0.25),
+        transparent 60%
+      ),
+      radial-gradient(
+        800px 500px at 80% 80%,
+        rgba(255, 77, 79, 0.12),
+        transparent 55%
+      ),
+      var(--bg-main) !important;
+  }
+
+  /* FORCE ALL TEXT TO USE HOME PAGE COLORS */
+  main,
+  section,
+  article,
+  div,
+  p,
+  span,
+  li,
+  label,
+  a {
+    color: var(--text-main) !important;
+    background-color: transparent !important;
+  }
+
+  /* FORCE ALL HEADINGS TO HOME PAGE STYLE */
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: "Oxanium", sans-serif;
+    color: var(--infracharge-red) !important;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-shadow: none !important;
+    background: none !important;
+  }
+
+  a:hover {
+    color: var(--infracharge-red) !important;
+  }
+}
+
+/* ===============================
+   BUTTONS
+================================ */
+
+.btn {
+  @apply inline-flex items-center justify-center rounded-xl px-5 py-3 font-medium transition;
+  color: var(--infracharge-red);
+  border: 1px solid var(--infracharge-red);
+}
+
+.btn-primary {
+  background-color: var(--infracharge-red);
+  color: #000;
+}
+
+.btn-outline {
+  border-color: var(--infracharge-red);
+  color: var(--infracharge-red);
+}
+
+/* ===============================
+   CARDS
+================================ */
+
+.card {
+  background-color: var(--bg-card) !important;
+  border: 1px solid var(--border-color);
+  @apply rounded-2xl p-5;
+}
