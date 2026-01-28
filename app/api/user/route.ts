@@ -7,29 +7,55 @@ async function getUserId() {
   return "demo-user-id"; // Replace after adding auth
 }
 
+/**
+ * GET selected vehicle for the user
+ * (SQL implementation will be added later)
+ */
 export async function GET() {
   await connectDb();
+
   const userId = await getUserId();
 
-  const profile = await Profile.findOne({ userId }).populate("selectedVehicle");
-  return NextResponse.json({ selected: profile?.selectedVehicle || null });
+  // SQL placeholder (no mongoose usage)
+  // Later: fetch from SQLite using userId
+  const selectedVehicle = null;
+
+  return NextResponse.json({ selected: selectedVehicle });
 }
 
+/**
+ * POST selected vehicle for the user
+ * (SQL implementation will be added later)
+ */
 export async function POST(req: Request) {
   await connectDb();
 
   const userId = await getUserId();
   const { vehicleId } = await req.json();
 
-  const exists = await Vehicle.findById(vehicleId);
-  if (!exists)
-    return NextResponse.json({ error: "Vehicle not found" }, { status: 404 });
+  if (!vehicleId) {
+    return NextResponse.json(
+      { error: "Vehicle not provided" },
+      { status: 400 }
+    );
+  }
 
-  const profile = await Profile.findOneAndUpdate(
-    { userId },
-    { $set: { selectedVehicle: exists._id } },
-    { upsert: true, new: true }
-  ).populate("selectedVehicle");
+  // SQL placeholder validation
+  // Later: check vehicle exists in SQLite
+  const vehicleExists = true;
 
-  return NextResponse.json({ selected: profile.selectedVehicle });
+  if (!vehicleExists) {
+    return NextResponse.json(
+      { error: "Vehicle not found" },
+      { status: 404 }
+    );
+  }
+
+  // SQL placeholder update
+  // Later: upsert profile + selected vehicle in SQLite
+  const selectedVehicle = {
+    id: vehicleId,
+  };
+
+  return NextResponse.json({ selected: selectedVehicle });
 }
