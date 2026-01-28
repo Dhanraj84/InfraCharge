@@ -1,61 +1,48 @@
 import { NextResponse } from "next/server";
-import { connectDb } from "@/lib/db";
-import Profile from "@/lib/models/Profile";
-import Vehicle from "@/lib/models/Vehicle";
-
-async function getUserId() {
-  return "demo-user-id"; // Replace after adding auth
-}
 
 /**
- * GET selected vehicle for the user
- * (SQL implementation will be added later)
+ * SQL-safe seed placeholder.
+ * Actual seeding logic will be implemented using SQLite later.
  */
-export async function GET() {
-  await connectDb();
+export async function POST() {
+  // Seed data kept for future SQL insert
+  const SEED = [
+    // ---- 4W ----
+    {
+      category: "4W",
+      brand: "Tata",
+      model: "Nexon EV LR",
+      batteryKWh: 40.5,
+      claimedRangeKm: 325,
+      realRangeKm: 260,
+      fastCharging: "CCS2",
+      socket: "Type-2 AC",
+      powerKw: 106,
+      torqueNm: 215,
+      chargeTimeHours: "56 min (10–80% DC)",
+      topSpeedKmph: 150,
+      priceINR: "₹15–19L",
+    },
+    {
+      category: "4W",
+      brand: "Tata",
+      model: "Tiago EV",
+      batteryKWh: 24,
+      claimedRangeKm: 315,
+      realRangeKm: 200,
+      fastCharging: "CCS2",
+      socket: "Type-2 AC",
+      powerKw: 45,
+      torqueNm: 110,
+      chargeTimeHours: "58 min (10–80% DC)",
+      topSpeedKmph: 120,
+      priceINR: "₹8.7–12L",
+    },
+  ];
 
-  const userId = await getUserId();
-
-  // SQL placeholder (no mongoose usage)
-  // Later: fetch from SQLite using userId
-  const selectedVehicle = null;
-
-  return NextResponse.json({ selected: selectedVehicle });
-}
-
-/**
- * POST selected vehicle for the user
- * (SQL implementation will be added later)
- */
-export async function POST(req: Request) {
-  await connectDb();
-
-  const userId = await getUserId();
-  const { vehicleId } = await req.json();
-
-  if (!vehicleId) {
-    return NextResponse.json(
-      { error: "Vehicle not provided" },
-      { status: 400 }
-    );
-  }
-
-  // SQL placeholder validation
-  // Later: check vehicle exists in SQLite
-  const vehicleExists = true;
-
-  if (!vehicleExists) {
-    return NextResponse.json(
-      { error: "Vehicle not found" },
-      { status: 404 }
-    );
-  }
-
-  // SQL placeholder update
-  // Later: upsert profile + selected vehicle in SQLite
-  const selectedVehicle = {
-    id: vehicleId,
-  };
-
-  return NextResponse.json({ selected: selectedVehicle });
+  // SQL seeding will be added later
+  return NextResponse.json({
+    message: "Vehicle seed placeholder (SQL)",
+    count: SEED.length,
+  });
 }
