@@ -173,23 +173,28 @@ export default function FindChargingPage() {
       const res = await fetch(url);
       const json = await res.json();
 
-      const coords = json?.paths?.[0]?.points?.coordinates;
-      if (!coords) return setError("Routing failed: No coordinates found");
+   const coords = json?.paths?.[0]?.points?.coordinates;
+if (!coords) return setError("Routing failed: No coordinates found");
 
-      const routeGeoJSON = {
-        type: "FeatureCollection",
-        features: [
-          {
-            type: "Feature",
-            geometry: { type: "LineString", coordinates: coords },
-            properties: {},
-          },
-        ],
-      };
+// ✅ ADD TYPE HERE (THIS IS THE ONLY CHANGE)
+const routeGeoJSON: GeoJSON.FeatureCollection<GeoJSON.Geometry> = {
+  type: "FeatureCollection",
+  features: [
+    {
+      type: "Feature",
+      geometry: {
+        type: "LineString",
+        coordinates: coords,
+      },
+      properties: {},
+    },
+  ],
+};
 
-      const map = mapRef.current!;
-      const src = map.getSource(ROUTE_SOURCE) as maptilersdk.GeoJSONSource;
-      src.setData(routeGeoJSON);
+const map = mapRef.current!;
+const src = map.getSource(ROUTE_SOURCE) as maptilersdk.GeoJSONSource;
+src.setData(routeGeoJSON);
+
 
       const bounds = new maptilersdk.LngLatBounds();
       coords.forEach((pt) => bounds.extend(pt));
