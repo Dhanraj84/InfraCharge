@@ -197,7 +197,7 @@ src.setData(routeGeoJSON);
 
 
       const bounds = new maptilersdk.LngLatBounds();
-      coords.forEach((pt) => bounds.extend(pt));
+coords.forEach((pt: [number, number]) => bounds.extend(pt));
       map.fitBounds(bounds, { padding: 60 });
     } catch (err) {
       console.error(err);
