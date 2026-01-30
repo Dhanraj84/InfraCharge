@@ -155,53 +155,58 @@ export default function WhereToBuild() {
     }
   }
 
-  /* ---------------- MAIN ANALYZE ---------------- */
-  async function analyze() {
-    setError("");
+/* ---------------- MAIN ANALYZE ---------------- */
+async function analyze() {
+  setError("");
 
-    if (!state.trim() || !district.trim()) {
-      setError("Please enter both state and district");
-      return;
-    }
-
-    setLoading(true);
-
-    try {
-      const [p, aData, cData] = await Promise.all([
-        loadPurchases(),
-        loadAmenities(),
-        loadChargersAll(),
-      ]);
-
-      setStateTotal(p.stateTotal ?? null);
-      setDistrictTotal(p.districtTotal ?? null);
-      setGrowth(p.growthPct ?? null);
-
-      const pts = Array.isArray(aData?.elements)
-        ? aData.elements.filter((e: any) => e.lat && e.lon)
-        : [];
-
-      setAmenities(pts);
-      setAmenitiesCount(pts.length);
-      setChargers(cData);
-
-      const map = mapRef.current;
-      if (map && pts.length) {
-        const b = new maptilersdk.LngLatBounds();
-        pts.forEach((p) => b.extend([p.lon, p.lat]));
-        map.fitBounds(b, { padding: 50 });
-      }
-
-      const sug = await computeSuggestions(pts, cData, p);
-      setSuggestions(sug);
-      drawMarkers(sug);
-    } catch (e: any) {
-      setError("District not found or Overpass failed.");
-      console.error(e);
-    }
-
-    setLoading(false);
+  if (!state.trim() || !district.trim()) {
+    setError("Please enter both state and district");
+    return;
   }
+
+  setLoading(true);
+
+  try {
+    const [p, aData, cData] = await Promise.all([
+      loadPurchases(),
+      loadAmenities(),
+      loadChargersAll(),
+    ]);
+
+    setStateTotal(p.stateTotal ?? null);
+    setDistrictTotal(p.districtTotal ?? null);
+    setGrowth(p.growthPct ?? null);
+
+    // ✅ CI-safe filtering with type guard
+    const pts = Array.isArray(aData?.elements)
+      ? aData.elements.filter(
+          (e: any): e is { lat: number; lon: number } =>
+            Number.isFinite(e.lat) && Number.isFinite(e.lon)
+        )
+      : [];
+
+    setAmenities(pts);
+    setAmenitiesCount(pts.length);
+    setChargers(cData);
+
+    const map = mapRef.current;
+    if (map && pts.length) {
+      const b = new maptilersdk.LngLatBounds();
+      pts.forEach((p) => b.extend([p.lon, p.lat] as [number, number]));
+      map.fitBounds(b, { padding: 50 });
+    }
+
+    const sug = await computeSuggestions(pts, cData, p);
+    setSuggestions(sug);
+    drawMarkers(sug);
+  } catch (e: any) {
+    setError("District not found or Overpass failed.");
+    console.error(e);
+  }
+
+  setLoading(false);
+}
+
 
   /* ---------------- COST CALCULATOR LOGIC ---------------- */
   function calculate() {
