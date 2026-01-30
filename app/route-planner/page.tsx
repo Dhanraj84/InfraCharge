@@ -276,23 +276,24 @@ const planRoute = useCallback(async () => {
    
 
     // Fit map
-    const coords = r.geojson.geometry.coordinates;
-    try {
-      const minLon = Math.min(...coords.map((c) => c[0]));
-      const maxLon = Math.max(...coords.map((c) => c[0]));
-      const minLat = Math.min(...coords.map((c) => c[1]));
-      const maxLat = Math.max(...coords.map((c) => c[1]));
+ const coords = r.geojson.geometry.coordinates as [number, number][];
 
-      setViewState({
-        longitude: (minLon + maxLon) / 2,
-        latitude: (minLat + maxLat) / 2,
-        zoom: 8,
-      });
-    } catch {}
+try {
+  const minLon = Math.min(...coords.map((c) => c[0]));
+  const maxLon = Math.max(...coords.map((c) => c[0]));
+  const minLat = Math.min(...coords.map((c) => c[1]));
+  const maxLat = Math.max(...coords.map((c) => c[1]));
 
-    const mid = middleOfLine(coords);
-    const weather = await getWeatherImpact(mid);
-    setWeatherImpact(weather);
+  setViewState({
+    longitude: (minLon + maxLon) / 2,
+    latitude: (minLat + maxLat) / 2,
+    zoom: 8,
+  });
+} catch {}
+
+const mid = middleOfLine(coords);
+const weather = await getWeatherImpact(mid);
+setWeatherImpact(weather);
 
 // 🔑 STRATEGIC POINTS (prevents 429)
 const strategicPoints = sampleRoutePoints(coords, 80); // every ~8–10 km
@@ -501,101 +502,8 @@ if (coords?.length) {
           <button onClick={planRoute} className="btn btn-primary">Plan Route</button>
         </div>
 
-        {/* Map */}
-        <div className="h-[480px] card p-0 overflow-hidden">
-          <MapView
-            // ref={mapRef}
-            mapLib={maplibregl}
-            mapStyle={mapStyle}
-            viewState={viewState}
-            // // viewState={viewState}
-            // onMoveEnd={(e) => setViewState(e.viewState)}
-            // onMove={(e: ViewStateChangeEvent) => setViewState(e.viewState)}
-            style={{ width: "100%", height: "100%" }}
-            // onMove={(e: ViewStateChangeEvent) => setViewState(e.viewState)}
-            // mapLib={maplibregl}
-            // onLoad={(e) => setMap(e.target)}
-          > 
-            <NavigationControl position="top-left" />
+       {/* Map */}
 
-          {srcPoint &&
-  Number.isFinite(srcPoint.lon) &&
-  Number.isFinite(srcPoint.lat) && (
-    <Marker longitude={srcPoint.lon} latitude={srcPoint.lat} anchor="bottom">
-      <div className="relative">
-        <div className="w-4 h-4 bg-blue-600 rounded-full" />
-        <div className="absolute left-1/2 -bottom-2 w-0 h-0 
-          border-l-4 border-r-4 border-t-8 
-          border-l-transparent border-r-transparent border-t-blue-600
-          -translate-x-1/2" />
-      </div>
-    </Marker>
-)}
-           {dstPoint && (
-  <Marker longitude={dstPoint.lon} latitude={dstPoint.lat} anchor="bottom">
-    <div className="relative">
-      <div className="w-4 h-4 bg-red-600 rounded-full" />
-      <div className="absolute left-1/2 -bottom-2 w-0 h-0 
-        border-l-4 border-r-4 border-t-8 
-        border-l-transparent border-r-transparent border-t-red-600
-        -translate-x-1/2" />
-    </div>
-  </Marker>
-)}
-
-            {/* 🔴 Active charging station marker */}
-{activeStation && (
-  <Marker
-    longitude={activeStation.lon}
-    latitude={activeStation.lat}
-    anchor="bottom"
-  >
-    <div className="px-2 py-1 text-xs bg-red-600 text-white rounded-lg">
-      Charging Stop
-    </div>
-  </Marker>
-)}
-
-
-            {routeGeoJSON && (
-<Source id="route-src" type="geojson" data={routeGeoJSON}>
-    <Layer {...routeLayer} />
-  </Source>
-)}
-{/* 🔴 Charging navigation route */}
-{chargingRouteGeoJSON && (
-  <Source
-    id="charging-route-src"
-    type="geojson"
-    data={chargingRouteGeoJSON}
-  >
-    <Layer {...chargingRouteLayer} />
-  </Source>
-)}
-
-
-{chargingStops
-  .filter(
-    (c) =>
-      typeof c.lon === "number" &&
-      typeof c.lat === "number"
-  )
-  .map((c) => (
-    <Marker
-      key={c.id}
-      longitude={c.lon}
-      latitude={c.lat}
-      anchor="bottom"
-    >
-      <div className="w-5 h-5 bg-emerald-400 rounded-full ring-2 ring-emerald-200" />
-    </Marker>
-  ))}
-{/* 
-                <div className="w-5 h-5 bg-emerald-400 rounded-full ring-2 ring-emerald-200" />
-              </Marker>
-            ))} */}
-          </MapView>
-        </div>
       </section>
 
       {/* SIDEBAR */}
