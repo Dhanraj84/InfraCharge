@@ -178,34 +178,42 @@ async function analyze() {
     setGrowth(p.growthPct ?? null);
 
     // ✅ CI-safe filtering with type guard
-    const pts = Array.isArray(aData?.elements)
-      ? aData.elements.filter(
-          (e: any): e is { lat: number; lon: number } =>
-            Number.isFinite(e.lat) && Number.isFinite(e.lon)
-        )
-      : [];
+    // ✅ CI-safe filtering with type guard
+const pts = Array.isArray(aData?.elements)
+  ? aData.elements.filter(
+      (e: any): e is { lat: number; lon: number } =>
+        Number.isFinite(e.lat) && Number.isFinite(e.lon)
+    )
+  : [];
 
-    setAmenities(pts);
-    setAmenitiesCount(pts.length);
-    setChargers(cData);
+setAmenities(pts);
+setAmenitiesCount(pts.length);
+setChargers(cData);
 
-    const map = mapRef.current;
-    if (map && pts.length) {
-      const b = new maptilersdk.LngLatBounds();
-      pts.forEach((p) => b.extend([p.lon, p.lat] as [number, number]));
-      map.fitBounds(b, { padding: 50 });
+const map = mapRef.current;
+if (map && pts.length) {
+  const b = new maptilersdk.LngLatBounds();
+
+  pts.forEach((p) => {
+    if (Number.isFinite(p.lon) && Number.isFinite(p.lat)) {
+      b.extend([p.lon, p.lat] as [number, number]);
     }
+  });
 
-    const sug = await computeSuggestions(pts, cData, p);
-    setSuggestions(sug);
-    drawMarkers(sug);
-  } catch (e: any) {
-    setError("District not found or Overpass failed.");
-    console.error(e);
-  }
-
-  setLoading(false);
+  map.fitBounds(b, { padding: 50 });
 }
+
+const sug = await computeSuggestions(pts, cData, p);
+setSuggestions(sug);
+drawMarkers(sug);
+} catch (e: unknown) {
+setError("District not found or Overpass failed.");
+console.error(e);
+}
+
+setLoading(false);
+}
+
 
 
   /* ---------------- COST CALCULATOR LOGIC ---------------- */
