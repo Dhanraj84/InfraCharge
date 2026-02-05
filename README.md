@@ -1,5 +1,7 @@
 🚀 What InfraCharge Does
+
 InfraCharge is an intelligent EV ecosystem platform that helps:
+
 🔎 EV users find the nearest charging stations
 📊 Infrastructure planners identify optimal station locations
 🌱 Promote sustainable transportation through CO₂ insights
