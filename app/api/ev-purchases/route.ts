@@ -19,12 +19,13 @@ function findTableName(db: any): string {
 }
 
 // Get all table columns
-function getColumns(db: any, table: string) {
+function getColumns(db: any, table: string): string[] {
   const cols = db.prepare(`PRAGMA table_info(${table})`).all() as {
     name: string;
   }[];
   return cols.map((c) => c.name);
 }
+
 
 // Try automatically mapping column names
 function guessColumns(cols: string[]) {

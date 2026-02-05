@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useMemo, useState,useRef  } from "react";
 import maplibregl from "maplibre-gl";
 
-import Map from "@vis.gl/react-maplibre";
+// import Map from "@vis.gl/react-maplibre";
 import {
   Map as MapView,
   Marker,
@@ -83,6 +83,8 @@ const ICE_KM_PER_L = 15;
 const ICE_CO2_G_PER_KM = 120;
 
 export default function RoutePlanner() {
+  const mapRef = useRef<maplibregl.Map | null>(null);
+
   // Inputs
   const [srcText, setSrcText] = useState("");
   const [dstText, setDstText] = useState("");
@@ -126,7 +128,7 @@ const [remainingStations, setRemainingStations] = useState(0);
     zoom: 10,
   });
 
-  // const mapRef = useRef<any>(null);
+// const mapRef = useRef<any>(null);
 
   // ------------------ Auto GPS source
   useEffect(() => {
@@ -134,6 +136,12 @@ const [remainingStations, setRemainingStations] = useState(0);
       navigator.geolocation.getCurrentPosition(async (pos) => {
         const p = { lon: pos.coords.longitude, lat: pos.coords.latitude };
         setSrcPoint(p);
+        mapRef.current?.flyTo({
+  center: [p.lon, p.lat],
+  zoom: 12,
+  speed: 1.2,
+});
+
 
         try {
           const url = `https://api.maptiler.com/geocoding/${p.lon},${p.lat}.json?key=${MT_KEY}`;
@@ -142,7 +150,11 @@ const [remainingStations, setRemainingStations] = useState(0);
           setSrcText(j?.features?.[0]?.place_name || "");
         } catch {}
 
-        setViewState({ longitude: p.lon, latitude: p.lat, zoom: 12 });
+mapRef.current?.flyTo({
+  center: [p.lon, p.lat],
+  zoom: 12,
+  speed: 1.2,
+});
       });
     }
   }, [srcPoint]);
@@ -277,6 +289,22 @@ const planRoute = useCallback(async () => {
 
     // Fit map
  const coords = r.geojson.geometry.coordinates as [number, number][];
+ const minLon = Math.min(...coords.map((c) => c[0]));
+const maxLon = Math.max(...coords.map((c) => c[0]));
+const minLat = Math.min(...coords.map((c) => c[1]));
+const maxLat = Math.max(...coords.map((c) => c[1]));
+
+mapRef.current?.fitBounds(
+  [
+    [minLon, minLat],
+    [maxLon, maxLat],
+  ],
+  {
+    padding: 80,
+    duration: 1200,
+  }
+);
+
 
 try {
   const minLon = Math.min(...coords.map((c) => c[0]));
@@ -284,11 +312,17 @@ try {
   const minLat = Math.min(...coords.map((c) => c[1]));
   const maxLat = Math.max(...coords.map((c) => c[1]));
 
-  setViewState({
-    longitude: (minLon + maxLon) / 2,
-    latitude: (minLat + maxLat) / 2,
-    zoom: 8,
-  });
+  mapRef.current?.fitBounds(
+  [
+    [minLon, minLat],
+    [maxLon, maxLat],
+  ],
+  {
+    padding: 80,
+    duration: 1200,
+  }
+);
+
 } catch {}
 
 const mid = middleOfLine(coords);
@@ -454,6 +488,7 @@ const chargingRouteLayer = useMemo(
   []
 );
 const navigateToStation = async (station: any) => {
+  
   if (!srcPoint || !station) return;
 
   setActiveStation(station);
@@ -469,15 +504,25 @@ const navigateToStation = async (station: any) => {
   });
   const coords = r.geojson.geometry.coordinates;
 if (coords?.length) {
+    mapRef.current?.easeTo({
+    center: [station.lon, station.lat],
+    zoom: 13,
+    pitch: 45,
+    bearing: 0,
+    duration: 1000,
+  });
+}
   const lons = coords.map((c: number[]) => c[0]);
   const lats = coords.map((c: number[]) => c[1]);
 
-  setViewState({
-    longitude: (Math.min(...lons) + Math.max(...lons)) / 2,
-    latitude: (Math.min(...lats) + Math.max(...lats)) / 2,
-    zoom: 11,
-  });
-}
+mapRef.current?.easeTo({
+  center: [station.lon, station.lat],
+  zoom: 13,
+  pitch: 45,
+  bearing: 0,
+  duration: 1000,
+});
+
 };
 
 
@@ -502,8 +547,109 @@ if (coords?.length) {
           <button onClick={planRoute} className="btn btn-primary">Plan Route</button>
         </div>
 
-       {/* Map */}
+        {/* Map */}
+        <div className="h-[480px] card p-0 overflow-hidden">
+<MapView
+  mapLib={maplibregl}
+  mapStyle={mapStyle}
+  initialViewState={{
+    longitude: 77.5946,
+    latitude: 12.9716,
+    zoom: 10,
+  }}
+  onLoad={(e) => {
+    mapRef.current = e.target;
+  }}
+  style={{ width: "100%", height: "100%" }}
+  dragPan
+  scrollZoom
+  doubleClickZoom
+  touchZoomRotate
+  keyboard
+>
+  <NavigationControl position="top-left" />
 
+  {/* 🔵 SOURCE MARKER */}
+  {srcPoint && (
+    <Marker longitude={srcPoint.lon} latitude={srcPoint.lat} anchor="bottom">
+      <div className="relative">
+        <div className="w-7 h-7 bg-blue-600 rounded-full shadow-lg flex items-center justify-center">
+          <div className="w-2.5 h-2.5 bg-white rounded-full" />
+        </div>
+        <div
+          className="absolute left-1/2 -bottom-3 w-0 h-0
+          border-l-[7px] border-r-[7px] border-t-[12px]
+          border-l-transparent border-r-transparent border-t-blue-600
+          -translate-x-1/2"
+        />
+      </div>
+    </Marker>
+  )}
+
+  {/* 🔴 DESTINATION MARKER */}
+  {dstPoint && (
+    <Marker longitude={dstPoint.lon} latitude={dstPoint.lat} anchor="bottom">
+      <div className="relative">
+        <div className="w-7 h-7 bg-red-600 rounded-full shadow-lg flex items-center justify-center">
+          <div className="w-2.5 h-2.5 bg-white rounded-full" />
+        </div>
+        <div
+          className="absolute left-1/2 -bottom-3 w-0 h-0
+          border-l-[7px] border-r-[7px] border-t-[12px]
+          border-l-transparent border-r-transparent border-t-red-600
+          -translate-x-1/2"
+        />
+      </div>
+    </Marker>
+  )}
+
+  {/* 🔴 ACTIVE CHARGING STATION */}
+  {activeStation && (
+    <Marker
+      longitude={activeStation.lon}
+      latitude={activeStation.lat}
+      anchor="bottom"
+    >
+      <div className="px-2 py-1 text-xs bg-red-600 text-white rounded-lg shadow">
+        Charging Stop
+      </div>
+    </Marker>
+  )}
+
+  {/* 🟦 MAIN ROUTE */}
+  {routeGeoJSON && (
+    <Source id="route-src" type="geojson" data={routeGeoJSON}>
+      <Layer {...routeLayer} />
+    </Source>
+  )}
+
+  {/* 🔴 NAVIGATION TO CHARGER ROUTE */}
+  {chargingRouteGeoJSON && (
+    <Source
+      id="charging-route-src"
+      type="geojson"
+      data={chargingRouteGeoJSON}
+    >
+      <Layer {...chargingRouteLayer} />
+    </Source>
+  )}
+
+  {/* 🟢 CHARGING STATIONS */}
+  {chargingStops
+    .filter((c) => typeof c.lon === "number" && typeof c.lat === "number")
+    .map((c) => (
+      <Marker
+        key={c.id}
+        longitude={c.lon}
+        latitude={c.lat}
+        anchor="center"
+      >
+        <div className="w-3.5 h-3.5 bg-emerald-500 rounded-full ring-2 ring-white shadow-md" />
+      </Marker>
+    ))}
+</MapView>
+
+        </div>
       </section>
 
       {/* SIDEBAR */}

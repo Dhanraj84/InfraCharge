@@ -7,9 +7,23 @@
    (CHANGE ONLY HERE IN FUTURE)
 ================================ */
 
+/* 🌞 LIGHT MODE (DEFAULT) */
 :root {
   --infracharge-red: #ff4d4f;
 
+  --bg-main: #ffffff;
+  --bg-card: #f9fafb;
+
+  --text-main: #111827;
+  --text-muted: #6b7280;
+
+  --border-color: #e5e7eb;
+
+  color-scheme: light;
+}
+
+/* 🌙 DARK MODE (CONTROLLED BY next-themes) */
+.dark {
   --bg-main: #0b0b14;
   --bg-card: #121222;
 

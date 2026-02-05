@@ -1,12 +1,6 @@
 import { NextResponse } from "next/server";
 import { connectDb } from "@/lib/db";
 
-/**
- * SQL-safe vehicle seed route.
- * MongoDB/mongoose logic removed.
- * Seed data preserved for future SQLite inserts.
- */
-
 // Popular/representative Indian EVs (starter set). Add freely.
 const SEED = [
   // ---- 4W ----

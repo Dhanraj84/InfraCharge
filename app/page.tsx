@@ -63,30 +63,32 @@ export default function Home() {
         />
       </section>
 
-      {/* ========== WHERE TO BUILD ========= */}
-      <section className="grid md:grid-cols-2 gap-10 items-center">
-        <div className="space-y-4">
-          <h3 className="text-2xl font-bold text-text">
-            Where to build EV stations
-          </h3>
-          <p className="text-muted">
-            Analyze demand, traffic, charger gaps & amenities to pick the right spot.
-          </p>
-          <Link href="/where-to-build" className="btn btn-primary w-fit">
-            Analyze Locations →
-          </Link>
-        </div>
+    {/* ========== WHERE TO BUILD ========= */}
+<section className="grid md:grid-cols-2 gap-10 items-center">
+  <div className="space-y-4">
+    <h3 className="text-2xl font-bold text-text">
+      Where to build EV stations
+    </h3>
+    <p className="text-muted">
+      Analyze demand, traffic, charger gaps & amenities to pick the right spot.
+    </p>
+    <Link href="/where-to-build" className="btn btn-primary w-fit">
+      Analyze Locations →
+    </Link>
+  </div>
 
-        <div className="bg-card border border-border rounded-2xl p-2">
-          <Image
-            src="/where.jpg"
-            alt="Map"
-            width={1200}
-            height={700}
-            className="rounded-xl"
-          />
-        </div>
-      </section>
+  <div className="bg-card border border-border rounded-2xl p-2 overflow-hidden">
+    <video
+      src="/build-ev.mp4"
+      autoPlay
+      muted
+      loop
+      playsInline
+      className="w-full h-full rounded-xl object-cover"
+    />
+  </div>
+</section>
+
 
       {/* ========== FIND NEAREST ========= */}
       <section className="grid md:grid-cols-2 gap-10 items-center">
