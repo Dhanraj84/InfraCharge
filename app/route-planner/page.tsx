@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState,useRef  } from "react";
 import maplibregl from "maplibre-gl";
+import type { LineLayer } from "react-map-gl";
 
 // import Map from "@vis.gl/react-maplibre";
 import {
@@ -453,7 +454,7 @@ useEffect(() => {
     []
   );
 
-const routeLayer = useMemo(
+const routeLayer = useMemo<LineLayer>(
   () => ({
     id: "route-line",
     type: "line",
@@ -470,7 +471,7 @@ const routeLayer = useMemo(
   }),
   []
 );
-const chargingRouteLayer = useMemo(
+const chargingRouteLayer = useMemo<LineLayer>(
   () => ({
     id: "charging-route-line",
     type: "line",
@@ -675,17 +676,28 @@ mapRef.current?.easeTo({
             <li>Consumption: {whPerKm}</li>
           </ul>
         </div>
+          <div className="card">
+          <h3 className="font-bold">Trip Cost & CO₂</h3>
+          <ul className="opacity-90 text-sm space-y-1 mt-2">
+            <li>EV Cost: {evCost}</li>
+            <li>Fuel Cost: {fuelCost}</li>
+            <li>Savings: {savings}</li>
+            <li>CO₂ Saved: {co2Saved}</li>
+          </ul>
+        </div>
 
         <div className="card">
+
+          
           <div className="card">
-  <h3 className="font-bold">Charging Intelligence</h3>
+  <h3 className="font-bold">Charging Station</h3>
 
   <p className="text-sm opacity-80 mt-1">
-    Total stations along route: {totalRouteStations}
+    Stations : {totalRouteStations} | Passed:{passedStations} | Remaining: {remainingStations}
   </p>
-  <p className="text-sm opacity-80">
+  {/* <p className="text-sm opacity-80">
     Passed: {passedStations} | Remaining: {remainingStations}
-  </p>
+  </p> */}
 
 <h4 className="mt-3 font-semibold text-sm">
   Best charging stations on route
@@ -750,7 +762,7 @@ mapRef.current?.easeTo({
         
         </div>
 
-        <div className="card">
+        {/* <div className="card">
           <h3 className="font-bold">Trip Cost & CO₂</h3>
           <ul className="opacity-90 text-sm space-y-1 mt-2">
             <li>EV Cost: {evCost}</li>
@@ -758,7 +770,7 @@ mapRef.current?.easeTo({
             <li>Savings: {savings}</li>
             <li>CO₂ Saved: {co2Saved}</li>
           </ul>
-        </div>
+        </div> */}
 
       </aside>
     </div>

@@ -73,7 +73,7 @@ export default function Home() {
       Analyze demand, traffic, charger gaps & amenities to pick the right spot.
     </p>
     <Link href="/where-to-build" className="btn btn-primary w-fit">
-      Analyze Locations →
+      Let's Go →
     </Link>
   </div>
 
@@ -105,13 +105,14 @@ export default function Home() {
         </div>
 
         <div className="bg-card border border-border rounded-2xl p-2">
-          <Image
-            src="/hero.jpg"
-            alt="Charging"
-            width={1200}
-            height={700}
-            className="rounded-xl"
-          />
+        <video
+      src="/Nearest.mp4"
+      autoPlay
+      muted
+      loop
+      playsInline
+      className="w-full h-full rounded-xl object-cover"
+    />
         </div>
       </section>
 
