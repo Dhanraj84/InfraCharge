@@ -23,6 +23,8 @@
     "esModuleInterop": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
+    "forceConsistentCasingInFileNames": true,
+    "types": [],
     "plugins": [
       {
         "name": "next"

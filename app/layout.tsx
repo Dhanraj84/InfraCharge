@@ -1,7 +1,7 @@
 import "./globals.css";
 import { ThemeProvider } from "next-themes";
 import Header from "./(components)/Header";
-import IntroVideo from "./(components)/IntroVideo";
+import { AuthProvider } from "@/context/AuthContext";
 
 export const metadata = {
   title: "InfraCharge",
@@ -22,11 +22,15 @@ export default function RootLayout({
           enableSystem={false}
           disableTransitionOnChange
         >
-          <IntroVideo />
-          <Header />
-          <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 md:px-8">
-            {children}
-          </main>
+          <AuthProvider>
+            <div className="min-h-screen flex flex-col">
+              <Header />
+
+              <main className="flex-1 mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 md:px-8">
+                {children}
+              </main>
+            </div>
+          </AuthProvider>
         </ThemeProvider>
       </body>
     </html>

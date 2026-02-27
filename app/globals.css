@@ -127,23 +127,4 @@
   border: 1px solid var(--border-color);
   @apply rounded-2xl p-5;
 }
-/* ===============================
-   MAPTILER POPUP FIX
-================================ */
-
-.maplibregl-popup {
-  z-index: 9999 !important;
-}
-
-.maplibregl-popup-content {
-  background: #111827 !important;
-  color: #ffffff !important;
-  border-radius: 10px;
-  padding: 10px 12px;
-  font-size: 12px;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.4);
-}
-
-.maplibregl-popup-tip {
-  border-top-color: #111827 !important;
-}
+@import 'mapbox-gl/dist/mapbox-gl.css';
