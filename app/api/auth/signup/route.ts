@@ -15,10 +15,12 @@ export async function POST(req: Request) {
     const decodedToken = await adminAuth.verifyIdToken(token);
 
     return NextResponse.json({
-      message: "Authenticated",
+      message: "User verified successfully",
       uid: decodedToken.uid,
       email: decodedToken.email,
+      name: decodedToken.name || null,
     });
+
   } catch (error) {
     return NextResponse.json(
       { error: "Invalid or expired token" },

@@ -1,40 +1,39 @@
 "use client";
-import { useState, useEffect } from "react";
+
+import { useEffect, useState } from "react";
 
 export default function IntroVideo() {
-  const [showVideo, setShowVideo] = useState(true);
+  const [showVideo, setShowVideo] = useState(false);
 
-  // Hide video on user click or after video ends
-  const hideVideo = () => {
-    setShowVideo(false);
-  };
-
-  // Optional: Automatically hide after video ends
   useEffect(() => {
-    const video = document.getElementById("intro-video") as HTMLVideoElement;
-    if (video) {
-      video.onended = () => setShowVideo(false);
+    // Check if intro already played in this session
+    const hasPlayed = sessionStorage.getItem("introPlayed");
+
+    if (!hasPlayed) {
+      setShowVideo(true);
     }
   }, []);
+
+  const hideVideo = () => {
+    sessionStorage.setItem("introPlayed", "true");
+    setShowVideo(false);
+  };
 
   if (!showVideo) return null;
 
   return (
     <div
       onClick={hideVideo}
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black transition-opacity duration-700"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black"
     >
       <video
-        id="intro-video"
         src="/intro.mp4"
-        className="w-full h-full object-cover"
         autoPlay
         muted
         playsInline
+        onEnded={hideVideo}
+        className="w-full h-full object-cover"
       />
-      <div className="absolute inset-0 flex items-center justify-center text-white text-xl font-semibold bg-black/40">
-        {/* Tap Anywhere to Continue */}
-      </div>
     </div>
   );
 }
