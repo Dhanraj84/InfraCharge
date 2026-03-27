@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Get Code
+      - name: Checkout Code
         uses: actions/checkout@v3
 
       - name: Setup Node
@@ -18,24 +18,8 @@ jobs:
         with:
           node-version: 18
 
-      # FRONTEND
-      - name: Install Frontend
-        run: |
-          cd frontend
-          npm install
+      - name: Install Dependencies
+        run: npm install
 
-      - name: Build Frontend
-        run: |
-          cd frontend
-          npm run build
-
-      # BACKEND
-      - name: Install Backend
-        run: |
-          cd backend
-          npm install
-
-      - name: Run Backend
-        run: |
-          cd backend
-          npm run build || true
+      - name: Build Project
+        run: npm run build
