@@ -1,26 +1,32 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
-import IntroVideo from "./(components)/IntroVideo";
+import { motion } from "framer-motion";
+import HeroSection from "./(components)/HeroSection";
 
 export default function Home() {
+  const sectionVariants = {
+    hidden: { opacity: 0, y: 60 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } }
+  };
+
   return (
     <>
-      <IntroVideo />
+      <HeroSection />
 
-      <div className="space-y-20">
-        {/* ================= HERO ================= */}
-        <section className="text-center py-12">
-          <h1 className="text-4xl md:text-6xl font-extrabold text-text">
-            Powering India’s Electric Future
-          </h1>
-          <p className="mt-4 text-lg max-w-2xl mx-auto text-muted">
-            Smart tools for EV owners, businesses, and planners.
-          </p>
-        </section>
+      {/* ================= MAIN CONTENT ================= */}
+      <div id="features" className="max-w-7xl mx-auto space-y-16 md:space-y-24 px-4 sm:px-6 lg:px-8 py-16 md:py-20 bg-bg">
 
         {/* ========== JOURNEY OF INNOVATION ========= */}
-        <section className="grid md:grid-cols-2 gap-8 items-center">
-          <div className="space-y-4">
+        <motion.section 
+          variants={sectionVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-50px" }}
+          className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-10 items-center"
+        >
+          <div className="space-y-5">
             <h2 className="text-3xl md:text-4xl font-bold text-text">
               Our Journey of Innovation
             </h2>
@@ -31,7 +37,7 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="relative bg-card border border-border rounded-3xl p-2">
+          <div className="relative bg-white/5 backdrop-blur-md border border-white/10 rounded-3xl p-2 hover:shadow-[0_0_20px_rgba(255,77,77,0.15)] hover:scale-[1.02] transition-all duration-300">
             <Image
               src="/timeline.png"
               width={1200}
@@ -40,47 +46,59 @@ export default function Home() {
               className="rounded-2xl"
             />
           </div>
-        </section>
+        </motion.section>
 
         {/* ========== ROUTE PLANNER CTA ========= */}
-        <section className="grid md:grid-cols-2 gap-10 items-center">
+        <motion.section 
+          variants={sectionVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-50px" }}
+          className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-10 items-center"
+        >
           <div className="space-y-4">
-            <h3 className="text-2xl font-bold text-text">
+            <h3 className="text-xl sm:text-2xl md:text-3xl font-bold text-text">
               Plan intelligent EV routes
             </h3>
             <p className="text-muted">
               Live traffic, weather, battery usage, charging stops & savings.
             </p>
-            <Link href="/route-planner" className="btn btn-primary w-fit">
+            <Link href="/route-planner" className="btn btn-primary w-full sm:w-fit text-center">
               Let’s Go →
             </Link>
           </div>
 
           <video
-            className="rounded-2xl bg-card border border-border"
+            className="rounded-2xl bg-white/5 backdrop-blur-md border border-white/10 hover:shadow-[0_0_20px_rgba(255,77,77,0.15)] hover:scale-[1.02] transition-all duration-300"
             src="/route.mp4"
             autoPlay
             loop
             muted
             playsInline
           />
-        </section>
+        </motion.section>
 
         {/* ========== WHERE TO BUILD ========= */}
-        <section className="grid md:grid-cols-2 gap-10 items-center">
+        <motion.section 
+          variants={sectionVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-50px" }}
+          className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-10 items-center"
+        >
           <div className="space-y-4">
-            <h3 className="text-2xl font-bold text-text">
+            <h3 className="text-xl sm:text-2xl md:text-3xl font-bold text-text">
               Where to build EV stations
             </h3>
             <p className="text-muted">
               Analyze demand, traffic, charger gaps & amenities to pick the right spot.
             </p>
-            <Link href="/where-to-build" className="btn btn-primary w-fit">
+            <Link href="/where-to-build" className="btn btn-primary w-full sm:w-fit text-center">
               Let's Go →
             </Link>
           </div>
 
-          <div className="bg-card border border-border rounded-2xl p-2 overflow-hidden">
+          <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-2 overflow-hidden hover:shadow-[0_0_20px_rgba(255,77,77,0.15)] hover:scale-[1.02] transition-all duration-300">
             <video
               src="/build-ev.mp4"
               autoPlay
@@ -90,23 +108,29 @@ export default function Home() {
               className="w-full h-full rounded-xl object-cover"
             />
           </div>
-        </section>
+        </motion.section>
 
         {/* ========== FIND NEAREST ========= */}
-        <section className="grid md:grid-cols-2 gap-10 items-center">
+        <motion.section 
+          variants={sectionVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-50px" }}
+          className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-10 items-center"
+        >
           <div className="space-y-4">
-            <h3 className="text-2xl font-bold text-text">
+            <h3 className="text-xl sm:text-2xl md:text-3xl font-bold text-text">
               Find nearest charging station
             </h3>
             <p className="text-muted">
               Auto-detect your location, filter by connector, price & amenities.
             </p>
-            <Link href="/find-charging" className="btn btn-primary w-fit">
+            <Link href="/find-charging" className="btn btn-primary w-full sm:w-fit text-center">
               Let’s Go →
             </Link>
           </div>
 
-          <div className="bg-card border border-border rounded-2xl p-2">
+          <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-2 hover:shadow-[0_0_20px_rgba(255,77,77,0.15)] hover:scale-[1.02] transition-all duration-300">
             <video
               src="/Nearest.mp4"
               autoPlay
@@ -116,20 +140,32 @@ export default function Home() {
               className="w-full h-full rounded-xl object-cover"
             />
           </div>
-        </section>
+        </motion.section>
 
         {/* ========== CO2 SAVINGS ========= */}
-        <section className="text-center space-y-4">
-          <h3 className="text-2xl font-bold text-text">
+        <motion.section 
+          variants={sectionVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-50px" }}
+          className="text-center space-y-5"
+        >
+          <h3 className="text-xl sm:text-2xl md:text-3xl font-bold text-text">
             Your CO₂ Savings
           </h3>
-          <p className="text-muted">
+          <p className="text-sm sm:text-base text-muted">
             See how much carbon & money you save by going electric.
           </p>
-          <Link href="/co2-savings" className="btn btn-primary">
+          <Link href="/co2-savings" className="btn btn-primary w-full sm:w-auto">
             Calculate Now →
           </Link>
-        </section>
+        </motion.section>
+
+        {/* ========== FOOTER ========= */}
+        <footer className="text-center text-muted pt-10 border-t border-border">
+          © 2026 InfraCharge • Built by Dhanraj 🚀
+        </footer>
+
       </div>
     </>
   );

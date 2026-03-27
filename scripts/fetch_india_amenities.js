@@ -1,0 +1,1 @@
+http://localhost:5000/predict-solar-weather?irradiation=800&ambient_temp=30&module_temp=35&hour=12&month=5

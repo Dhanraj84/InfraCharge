@@ -31,6 +31,21 @@ const config: Config = {
       boxShadow: {
         glowPrimary: "0 0 18px rgba(255, 77, 79, 0.45)",
       },
+      animation: {
+        'gradient-x': 'gradient-x 4s ease infinite',
+      },
+      keyframes: {
+        'gradient-x': {
+          '0%, 100%': {
+            'background-size': '200% 200%',
+            'background-position': 'left center',
+          },
+          '50%': {
+            'background-size': '200% 200%',
+            'background-position': 'right center',
+          },
+        },
+      },
     },
   },
   plugins: [],

@@ -46,6 +46,7 @@
     height: 100%;
     background-color: var(--bg-main) !important;
     color: var(--text-main) !important;
+    overflow-x: hidden;
   }
 
   body {
@@ -53,30 +54,31 @@
     background:
       radial-gradient(
         1200px 600px at 50% 20%,
-        rgba(120, 60, 120, 0.25),
+        rgba(255, 77, 79, 0.05),
         transparent 60%
       ),
       radial-gradient(
         800px 500px at 80% 80%,
-        rgba(255, 77, 79, 0.12),
+        rgba(255, 77, 79, 0.08),
         transparent 55%
       ),
       var(--bg-main) !important;
   }
 
   /* FORCE ALL TEXT TO USE HOME PAGE COLORS */
-  main,
-  section,
-  article,
-  div,
-  p,
-  span,
-  li,
-  label,
-  a {
-    color: var(--text-main) !important;
-    background-color: transparent !important;
-  }
+/* Apply theme text globally EXCEPT maptiler popup and map markers */
+main,
+section,
+article,
+div:not(.maptiler-popup-content):not(.custom-map-marker),
+p:not(.maptiler-popup-content p):not(.custom-map-marker p),
+span:not(.maptiler-popup-content span):not(.custom-map-marker span),
+li:not(.maptiler-popup-content li):not(.custom-map-marker li),
+label,
+a {
+  color: var(--text-main) !important;
+  background-color: transparent !important;
+}
 
   /* FORCE ALL HEADINGS TO HOME PAGE STYLE */
   h1,
@@ -89,11 +91,11 @@
     color: var(--infracharge-red) !important;
     font-weight: 800;
     letter-spacing: 0.08em;
-    text-shadow: none !important;
+    text-shadow: 0 0 15px rgba(255, 77, 79, 0.3) !important;
     background: none !important;
   }
 
-  a:hover {
+  a:not(.btn):hover {
     color: var(--infracharge-red) !important;
   }
 }
@@ -103,14 +105,31 @@
 ================================ */
 
 .btn {
-  @apply inline-flex items-center justify-center rounded-xl px-5 py-3 font-medium transition;
+  @apply inline-flex items-center justify-center rounded-xl px-5 py-3 font-medium transition-all duration-300;
   color: var(--infracharge-red);
-  border: 1px solid var(--infracharge-red);
+  border: 1px solid rgba(255, 77, 79, 0.3);
+  position: relative;
+}
+
+.btn:active,
+.btn:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--bg-main), 0 0 0 4px #ffffff !important;
+  transform: scale(0.98);
 }
 
 .btn-primary {
-  background-color: var(--infracharge-red);
-  color: #000;
+  background: linear-gradient(135deg, rgba(255, 77, 79, 0.9) 0%, rgba(220, 40, 40, 0.9) 100%);
+  color: #fff !important;
+  border: 1px solid rgba(255, 77, 79, 0.5);
+  box-shadow: 0 4px 15px rgba(255, 77, 79, 0.2);
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255, 77, 79, 0.4);
+  background: linear-gradient(135deg, rgba(255, 77, 79, 1) 0%, rgba(230, 50, 50, 1) 100%);
+  color: #fff !important;
 }
 
 .btn-outline {
@@ -127,4 +146,54 @@
   border: 1px solid var(--border-color);
   @apply rounded-2xl p-5;
 }
+
 @import 'mapbox-gl/dist/mapbox-gl.css';
+
+/* ================= MAPTILER POPUP FIX ================= */
+
+.maptiler-popup {
+  z-index: 9999 !important;
+}
+
+.maptiler-popup-content,
+.maptiler-popup-content * {
+  background-color: #ffffff !important;
+  color: #111111 !important;
+  opacity: 1 !important;
+  filter: none !important;
+  backdrop-filter: none !important;
+  text-shadow: none !important;
+}
+
+.maptiler-popup-content {
+  border-radius: 10px !important;
+  padding: 10px 12px !important;
+  font-size: 13px !important;
+  line-height: 1.5 !important;
+  font-weight: 600 !important;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35) !important;
+  max-width: 260px !important;
+}
+
+.maptiler-popup-tip {
+  border-top-color: #ffffff !important;
+}
+
+.maptiler-map,
+.maptiler-canvas-container,
+.maptiler-canvas,
+.maplibregl-canvas-container,
+.maplibregl-canvas {
+  overflow: visible !important;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* ===============================
+   LEAFLET FIX requested by user
+================================ */
+.leaflet-container {
+  width: 100% !important;
+  height: 100% !important;
+  z-index: 10;
+}

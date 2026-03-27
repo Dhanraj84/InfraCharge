@@ -1,0 +1,41 @@
+name: InfraCharge Pipeline
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Get Code
+        uses: actions/checkout@v3
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      # FRONTEND
+      - name: Install Frontend
+        run: |
+          cd frontend
+          npm install
+
+      - name: Build Frontend
+        run: |
+          cd frontend
+          npm run build
+
+      # BACKEND
+      - name: Install Backend
+        run: |
+          cd backend
+          npm install
+
+      - name: Run Backend
+        run: |
+          cd backend
+          npm run build || true

@@ -1,7 +1,9 @@
 import "./globals.css";
 import { ThemeProvider } from "next-themes";
-import Header from "./(components)/Header";
+import Navbar from "./(components)/Navbar";
 import { AuthProvider } from "@/context/AuthContext";
+
+import MainWrapper from "./(components)/MainWrapper";
 
 export const metadata = {
   title: "InfraCharge",
@@ -24,11 +26,10 @@ export default function RootLayout({
         >
           <AuthProvider>
             <div className="min-h-screen flex flex-col">
-              <Header />
-
-              <main className="flex-1 mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 md:px-8">
+              <Navbar />
+              <MainWrapper>
                 {children}
-              </main>
+              </MainWrapper>
             </div>
           </AuthProvider>
         </ThemeProvider>

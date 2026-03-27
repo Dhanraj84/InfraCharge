@@ -78,11 +78,11 @@ export default function SelectVehiclePage() {
             <div
               key={v.id}
               onClick={() => setSelected(v)}
-              className={`cursor-pointer rounded-xl p-5 border transition
+              className={`group relative cursor-pointer backdrop-blur-lg p-6 rounded-2xl border shadow-lg transition-all duration-300 overflow-hidden text-left
                 ${
                   selected?.id === v.id
-                    ? "border-red-400 bg-[#181830]"
-                    : "border-gray-700 bg-[#121222] hover:border-red-400"
+                    ? "border-red-500 bg-red-500/10 shadow-[0_0_20px_rgba(255,77,77,0.4)] dark:shadow-[0_0_20px_rgba(255,77,77,0.3)]"
+                    : "border-white/10 dark:border-white/5 bg-white/10 dark:bg-white/5 hover:border-white/20 dark:hover:border-white/10 hover:shadow-[0_0_20px_rgba(255,77,77,0.2)] dark:hover:shadow-[0_0_20px_rgba(255,77,77,0.15)] hover:scale-[1.02]"
                 }`}
             >
               <h3 className="text-lg font-semibold mb-3">{v.name}</h3>
@@ -99,7 +99,8 @@ export default function SelectVehiclePage() {
 
       {/* Selected vehicle summary */}
       {selected && (
-        <div className="mt-12 p-6 rounded-xl border border-red-400 bg-[#0b0b14]">
+        <div className="mt-12 group relative bg-white/10 dark:bg-white/5 backdrop-blur-lg p-8 rounded-2xl border border-white/10 shadow-[0_0_20px_rgba(255,77,77,0.2)] dark:shadow-[0_0_20px_rgba(255,77,77,0.15)] transition-all duration-300 overflow-hidden">
+          <div className="absolute top-0 right-0 -mt-6 -mr-6 w-32 h-32 bg-red-500/10 dark:bg-red-500/10 rounded-full blur-3xl pointer-events-none" />
           <h2 className="text-xl font-bold mb-2">
             {selected.name} selected
           </h2>

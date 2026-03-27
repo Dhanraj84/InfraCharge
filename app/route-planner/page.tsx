@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState,useRef  } from "react";
 import maplibregl from "maplibre-gl";
-import type { LineLayer } from "react-map-gl";
+import type { LineLayerSpecification } from "maplibre-gl";
 
 // import Map from "@vis.gl/react-maplibre";
 import {
@@ -11,6 +11,7 @@ import {
   Source,
   Layer,
   NavigationControl,
+  Popup,
 } from "@vis.gl/react-maplibre";
 
 
@@ -109,6 +110,7 @@ export default function RoutePlanner() {
   const [topStations, setTopStations] = useState<any[]>([]);
 const [chargingRouteGeoJSON, setChargingRouteGeoJSON] = useState<any | null>(null);
 const [activeStation, setActiveStation] = useState<any | null>(null);
+const [selectedMarker, setSelectedMarker] = useState<any | null>(null);
 
 
   // 🔋 Charging intelligence (NEW)
@@ -283,6 +285,8 @@ const planRoute = useCallback(async () => {
   type: "FeatureCollection",
   features: [r.geojson],
 });
+setChargingRouteGeoJSON(null);
+setSelectedMarker(null);
 
     setDistance(r.distance);
     setDuration(r.duration);
@@ -450,11 +454,11 @@ useEffect(() => {
 
   // ------------------ Map Style
   const mapStyle = useMemo(
-    () => `https://api.maptiler.com/maps/streets/style.json?key=${MT_KEY}`,
+    () => `https://api.maptiler.com/maps/streets-v2/style.json?key=${MT_KEY}`,
     []
   );
 
-const routeLayer = useMemo<LineLayer>(
+const routeLayer = useMemo<LineLayerSpecification>(
   () => ({
     id: "route-line",
     type: "line",
@@ -464,14 +468,14 @@ const routeLayer = useMemo<LineLayer>(
       "line-cap": "round",
     },
     paint: {
-      "line-color": "#3B82F6",
+      "line-color": "#22C55E",
       "line-width": 6,
       "line-opacity": 1,
     },
   }),
   []
 );
-const chargingRouteLayer = useMemo<LineLayer>(
+const chargingRouteLayer = useMemo<LineLayerSpecification>(
   () => ({
     id: "charging-route-line",
     type: "line",
@@ -489,10 +493,10 @@ const chargingRouteLayer = useMemo<LineLayer>(
   []
 );
 const navigateToStation = async (station: any) => {
-  
   if (!srcPoint || !station) return;
 
   setActiveStation(station);
+  setSelectedMarker(station);
 
   const r = await getRoute(srcPoint, {
     lat: station.lat,
@@ -504,52 +508,46 @@ const navigateToStation = async (station: any) => {
     features: [r.geojson],
   });
   const coords = r.geojson.geometry.coordinates;
-if (coords?.length) {
-    mapRef.current?.easeTo({
-    center: [station.lon, station.lat],
-    zoom: 13,
-    pitch: 45,
-    bearing: 0,
-    duration: 1000,
-  });
-}
-  const lons = coords.map((c: number[]) => c[0]);
-  const lats = coords.map((c: number[]) => c[1]);
-
-mapRef.current?.easeTo({
-  center: [station.lon, station.lat],
-  zoom: 13,
-  pitch: 45,
-  bearing: 0,
-  duration: 1000,
-});
-
+  if (coords?.length) {
+    const minLon = Math.min(...coords.map((c: number[]) => c[0]));
+    const maxLon = Math.max(...coords.map((c: number[]) => c[0]));
+    const minLat = Math.min(...coords.map((c: number[]) => c[1]));
+    const maxLat = Math.max(...coords.map((c: number[]) => c[1]));
+    
+    mapRef.current?.fitBounds(
+      [
+        [minLon, minLat],
+        [maxLon, maxLat],
+      ],
+      { padding: 80, duration: 1500 }
+    );
+  }
 };
 
 
 // ------------------ UI
 
   return (
-    <div className="grid lg:grid-cols-[2fr_1fr] gap-6">
-      <section className="space-y-4">
-        <header>
-          <h1 className="text-3xl font-bold">EV Route Planner</h1>
-          <p className="opacity-90">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-10 grid grid-cols-1 lg:grid-cols-[65%_35%] gap-6 items-start">
+      <section className="flex flex-col gap-4 lg:sticky lg:top-[90px] lg:h-[calc(100vh-110px)] relative">
+        <header className="shrink-0">
+          <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold">EV Route Planner</h1>
+          <p className="text-sm sm:text-base md:text-lg opacity-90 mt-1">
             Plan your trip with real-time traffic, weather updates, battery prediction & charging stops.
           </p>
         </header>
 
         {/* Inputs */}
-        <div className="card grid sm:grid-cols-[1fr_1fr_auto] gap-3">
-          <input className="p-3 rounded-xl bg-transparent border border-white/20"
+        <div className="card grid grid-cols-1 sm:grid-cols-[1fr_1fr_auto] gap-3 shrink-0 p-4 sm:p-6 transition-all duration-300 hover:scale-[1.02]">
+          <input className="w-full p-3 rounded-xl bg-transparent border border-white/20"
             value={srcText} onChange={(e) => setSrcText(e.target.value)} placeholder="Source (GPS auto)" />
-          <input className="p-3 rounded-xl bg-transparent border border-white/20"
+          <input className="w-full p-3 rounded-xl bg-transparent border border-white/20"
             value={dstText} onChange={(e) => setDstText(e.target.value)} placeholder="Destination" />
-          <button onClick={planRoute} className="btn btn-primary">Plan Route</button>
+          <button onClick={planRoute} className="w-full sm:w-auto px-4 sm:px-6 py-2 sm:py-3 btn btn-primary">Plan Route</button>
         </div>
 
         {/* Map */}
-        <div className="h-[480px] card p-0 overflow-hidden">
+        <div className="w-full h-[300px] sm:h-[400px] md:h-[500px] lg:h-full lg:min-h-[400px] card p-0 overflow-hidden rounded-xl">
 <MapView
   mapLib={maplibregl}
   mapStyle={mapStyle}
@@ -572,53 +570,36 @@ mapRef.current?.easeTo({
 
   {/* 🔵 SOURCE MARKER */}
   {srcPoint && (
-    <Marker longitude={srcPoint.lon} latitude={srcPoint.lat} anchor="bottom">
-      <div className="relative">
-        <div className="w-7 h-7 bg-blue-600 rounded-full shadow-lg flex items-center justify-center">
-          <div className="w-2.5 h-2.5 bg-white rounded-full" />
-        </div>
-        <div
-          className="absolute left-1/2 -bottom-3 w-0 h-0
-          border-l-[7px] border-r-[7px] border-t-[12px]
-          border-l-transparent border-r-transparent border-t-blue-600
-          -translate-x-1/2"
-        />
-      </div>
-    </Marker>
+    <Marker 
+      longitude={srcPoint.lon} 
+      latitude={srcPoint.lat} 
+      anchor="bottom" 
+      color="#3B82F6"
+      style={{ cursor: "pointer" }} 
+      onClick={(e) => { 
+        e.originalEvent.stopPropagation(); 
+        setSelectedMarker({ id: "src", title: srcText || "Origin", type: "system", lon: srcPoint.lon, lat: srcPoint.lat }); 
+      }} 
+    />
   )}
 
   {/* 🔴 DESTINATION MARKER */}
   {dstPoint && (
-    <Marker longitude={dstPoint.lon} latitude={dstPoint.lat} anchor="bottom">
-      <div className="relative">
-        <div className="w-7 h-7 bg-red-600 rounded-full shadow-lg flex items-center justify-center">
-          <div className="w-2.5 h-2.5 bg-white rounded-full" />
-        </div>
-        <div
-          className="absolute left-1/2 -bottom-3 w-0 h-0
-          border-l-[7px] border-r-[7px] border-t-[12px]
-          border-l-transparent border-r-transparent border-t-red-600
-          -translate-x-1/2"
-        />
-      </div>
-    </Marker>
-  )}
-
-  {/* 🔴 ACTIVE CHARGING STATION */}
-  {activeStation && (
-    <Marker
-      longitude={activeStation.lon}
-      latitude={activeStation.lat}
-      anchor="bottom"
-    >
-      <div className="px-2 py-1 text-xs bg-red-600 text-white rounded-lg shadow">
-        Charging Stop
-      </div>
-    </Marker>
+    <Marker 
+      longitude={dstPoint.lon} 
+      latitude={dstPoint.lat} 
+      anchor="bottom" 
+      color="#EF4444"
+      style={{ cursor: "pointer" }} 
+      onClick={(e) => { 
+        e.originalEvent.stopPropagation(); 
+        setSelectedMarker({ id: "dst", title: dstText || "Destination", type: "system", lon: dstPoint.lon, lat: dstPoint.lat }); 
+      }} 
+    />
   )}
 
   {/* 🟦 MAIN ROUTE */}
-  {routeGeoJSON && (
+  {routeGeoJSON && !chargingRouteGeoJSON && (
     <Source id="route-src" type="geojson" data={routeGeoJSON}>
       <Layer {...routeLayer} />
     </Source>
@@ -636,38 +617,43 @@ mapRef.current?.easeTo({
   )}
 
   {/* 🟢 CHARGING STATIONS */}
-  {chargingStops
+  {topStations
     .filter((c) => typeof c.lon === "number" && typeof c.lat === "number")
     .map((c) => (
       <Marker
         key={c.id}
         longitude={c.lon}
         latitude={c.lat}
-        anchor="center"
-      >
-        <div className="w-3.5 h-3.5 bg-emerald-500 rounded-full ring-2 ring-white shadow-md" />
-      </Marker>
+        anchor="bottom"
+        color={selectedMarker?.id === c.id ? "#EF4444" : "#22C55E"}
+        onClick={(e) => {
+          e.originalEvent.stopPropagation();
+          setSelectedMarker(c);
+          mapRef.current?.flyTo({ center: [c.lon, c.lat], zoom: 14, duration: 1200 });
+        }}
+        style={{ cursor: "pointer" }}
+      />
     ))}
-</MapView>
 
+  {/* Popups removed: Map minimal clean view */}
+</MapView>
         </div>
       </section>
 
       {/* SIDEBAR */}
-      <aside className="space-y-4">
+      <aside className="flex flex-col gap-5 pb-10">
 
-        <div className="card">
+        <div className="card w-full p-4 sm:p-6 rounded-xl transition-all duration-300 hover:scale-[1.02]">
           <h3 className="font-bold">Route Summary</h3>
           <ul className="opacity-90 text-sm space-y-1 mt-2">
             <li>Distance: {distance ? fmtKm(distance) : "—"}</li>
             <li>Time: {duration ? fmtHourMin(duration) : "—"}</li>
-
             <li>Traffic: N/A</li>
             <li>Weather Impact: {weatherImpact}</li>
           </ul>
         </div>
 
-        <div className="card">
+        <div className="card w-full p-4 sm:p-6 rounded-xl transition-all duration-300 hover:scale-[1.02]">
           <h3 className="font-bold">Battery & Energy</h3>
           <ul className="opacity-90 text-sm space-y-1 mt-2">
             <li>Battery needed: {batteryNeeded}</li>
@@ -676,7 +662,8 @@ mapRef.current?.easeTo({
             <li>Consumption: {whPerKm}</li>
           </ul>
         </div>
-          <div className="card">
+
+        <div className="card w-full p-4 sm:p-6 rounded-xl transition-all duration-300 hover:scale-[1.02]">
           <h3 className="font-bold">Trip Cost & CO₂</h3>
           <ul className="opacity-90 text-sm space-y-1 mt-2">
             <li>EV Cost: {evCost}</li>
@@ -686,91 +673,65 @@ mapRef.current?.easeTo({
           </ul>
         </div>
 
-        <div className="card">
+        <div className="card w-full p-4 sm:p-6 rounded-xl transition-all duration-300 hover:scale-[1.02]">
+          <h3 className="font-bold">Charging Stations</h3>
+          <p className="text-sm opacity-80 mt-1">
+            Stations: {totalRouteStations} | Passed: {passedStations} | Remaining: {remainingStations}
+          </p>
 
-          
-          <div className="card">
-  <h3 className="font-bold">Charging Station</h3>
+          <h4 className="mt-4 font-semibold text-sm">
+            Best charging stations on route
+          </h4>
 
-  <p className="text-sm opacity-80 mt-1">
-    Stations : {totalRouteStations} | Passed:{passedStations} | Remaining: {remainingStations}
-  </p>
-  {/* <p className="text-sm opacity-80">
-    Passed: {passedStations} | Remaining: {remainingStations}
-  </p> */}
+          {topStations.length === 0 ? (
+            <p className="text-sm opacity-60 mt-2">No stations found along route</p>
+          ) : (
+            <div className="mt-3 space-y-3">
+              {topStations.map((c) => (
+                <div
+                  key={c.id}
+                  onClick={() => {
+                    setSelectedMarker(c);
+                    mapRef.current?.flyTo({ center: [c.lon, c.lat], zoom: 14, duration: 1200 });
+                  }}
+                  className={`p-4 rounded-xl border bg-card/50 space-y-2 shadow-sm cursor-pointer transition-colors duration-300 ${selectedMarker?.id === c.id ? "border-red-500 bg-red-500/5" : "border-border hover:border-red-500/30"}`}
+                >
+                  <h3 className="text-lg font-bold text-red-500">
+                    {c.title || "Charging Station"}
+                  </h3>
 
-<h4 className="mt-3 font-semibold text-sm">
-  Best charging stations on route
-</h4>
+                  <p className="text-sm opacity-90">
+                    {c.distanceKm ? `${c.distanceKm.toFixed(1)} km` : "—"} ·{" "}
+                    {c.powerKW ? `${c.powerKW} kW` : "—"}
+                  </p>
 
- {topStations.length === 0 ? (
-  <p className="text-sm opacity-60 mt-2">No stations found along route</p>
-) : (
+                  <p className="text-sm opacity-80">
+                    <strong>Address:</strong> {c.addressLine}
+                  </p>
+                  <p className="text-sm opacity-80">
+                    <strong>City:</strong> {c.city}
+                  </p>
+                  <p className="text-sm opacity-80">
+                    <strong>State:</strong> {c.state}
+                  </p>
+                  <p className="text-sm opacity-80">
+                    <strong>Pincode:</strong> {c.postcode}
+                  </p>
 
-    <div className="mt-2 space-y-2">
-    {topStations.map((c) => (
-  <div
-    key={c.id}
-    className="p-4 rounded-xl border border-white/10 bg-black/30 space-y-2"
-  >
-    <h3 className="text-lg font-bold text-red-400">
-      {c.title || "Charging Station"}
-    </h3>
-
-    <p className="text-sm opacity-80">
-      {c.distanceKm ? `${c.distanceKm.toFixed(1)} km` : "—"} ·{" "}
-      {c.powerKW ? `${c.powerKW} kW` : "—"}
-    </p>
-
-    <p className="text-sm">
-      <strong>Address:</strong> {c.addressLine}
-    </p>
-
-    <p className="text-sm">
-      <strong>City:</strong> {c.city}
-    </p>
-
-    <p className="text-sm">
-      <strong>State:</strong> {c.state}
-    </p>
-
-    <p className="text-sm">
-      <strong>Pincode:</strong> {c.postcode}
-    </p>
-
-    {/* <a
-      href={`https://www.google.com/maps/dir/?api=1&destination=${c.lat},${c.lon}`}
-      target="_blank"
-      className="block mt-3 text-center border border-red-500 text-red-400 rounded-xl py-2 hover:bg-red-500 hover:text-black transition"
-    >
-      Navigate
-    </a> */}
-    <button
-  onClick={() => navigateToStation(c)}
-  className="block w-full mt-3 text-center border border-red-500 text-red-400 rounded-xl py-2 hover:bg-red-500 hover:text-black transition"
->
-  Navigate
-</button>
-
-  </div>
-))}
-
-    </div>
-  )}
-</div>
-
-        
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      navigateToStation(c);
+                    }}
+                    className="block w-full mt-4 text-center border border-red-500 text-red-500 rounded-xl py-2 hover:bg-red-500 hover:text-white transition-colors duration-300"
+                  >
+                    Navigate
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
-
-        {/* <div className="card">
-          <h3 className="font-bold">Trip Cost & CO₂</h3>
-          <ul className="opacity-90 text-sm space-y-1 mt-2">
-            <li>EV Cost: {evCost}</li>
-            <li>Fuel Cost: {fuelCost}</li>
-            <li>Savings: {savings}</li>
-            <li>CO₂ Saved: {co2Saved}</li>
-          </ul>
-        </div> */}
 
       </aside>
     </div>

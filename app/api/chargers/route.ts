@@ -3,8 +3,10 @@ import { NextResponse } from "next/server";
 export async function GET(req: Request) {
   try {
     const { searchParams } = new URL(req.url);
+
     const lat = searchParams.get("lat");
     const lon = searchParams.get("lon");
+    const range = searchParams.get("range") || "10"; // 🔥 get range from frontend
 
     if (!lat || !lon) {
       return NextResponse.json([], { status: 200 });
@@ -15,7 +17,7 @@ export async function GET(req: Request) {
     const url =
       `https://api.openchargemap.io/v3/poi/?output=json` +
       `&latitude=${lat}&longitude=${lon}` +
-      `&distance=10&distanceunit=KM&maxresults=50`;
+      `&distance=${range}&distanceunit=KM&maxresults=50`;
 
     const response = await fetch(url, {
       headers: {
@@ -23,7 +25,6 @@ export async function GET(req: Request) {
       },
     });
 
-    // ✅ THIS FIXES 500
     if (!response.ok) {
       console.error("OCM fetch failed:", response.status);
       return NextResponse.json([], { status: 200 });
@@ -37,4 +38,3 @@ export async function GET(req: Request) {
     return NextResponse.json([], { status: 200 });
   }
 }
-
