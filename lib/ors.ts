@@ -1,4 +1,4 @@
-export async function getRoute(start, end, API_KEY) {
+export async function getRoute(start: { lng: number; lat: number }, end: { lng: number; lat: number }, API_KEY: string) {
   const url =
     `https://api.openrouteservice.org/v2/directions/driving-car?api_key=${API_KEY}`;
 
