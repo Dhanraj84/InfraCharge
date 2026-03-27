@@ -79,24 +79,24 @@ export async function GET(req: Request) {
 
     // District total
     const districtTotal =
-      db
+      (db
         .prepare(
           `SELECT SUM(${c.count}) AS total 
            FROM ${table}
            WHERE LOWER(${c.state}) = @state
            AND LOWER(${c.district}) = @district`
         )
-        .get({ state, district })?.total ?? 0;
+        .get({ state, district }) as { total: number })?.total ?? 0;
 
     // State total
     const stateTotal =
-      db
+      (db
         .prepare(
           `SELECT SUM(${c.count}) AS total 
            FROM ${table}
            WHERE LOWER(${c.state}) = @state`
         )
-        .get({ state })?.total ?? 0;
+        .get({ state }) as { total: number })?.total ?? 0;
 
     return NextResponse.json({
       table,
