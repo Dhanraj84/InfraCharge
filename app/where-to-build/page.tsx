@@ -764,8 +764,9 @@ popup.addTo(map);
     }
 
     try {
+      const apiUrl = process.env.NEXT_PUBLIC_ML_API_URL || "http://127.0.0.1:8000";
       const res = await fetch(
-        `http://127.0.0.1:8000/solar-analysis?land_area=${landArea}`
+        `${apiUrl}/solar-analysis?land_area=${landArea}`
       );
 
       // ✅ CHECK RESPONSE
