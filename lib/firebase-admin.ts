@@ -2,9 +2,11 @@ import { initializeApp, cert, getApps } from "firebase-admin/app";
 import { getAuth } from "firebase-admin/auth";
 
 const serviceAccount = {
-  projectId: process.env.FIREBASE_PROJECT_ID,
-  clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-  privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, "\n"),
+  projectId: process.env.FIREBASE_PROJECT_ID || "dummy-project-id",
+  clientEmail: process.env.FIREBASE_CLIENT_EMAIL || "dummy@example.com",
+  privateKey:
+    process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, "\n") ||
+    "-----BEGIN PRIVATE KEY-----\ndummy\n-----END PRIVATE KEY-----",
 };
 
 const app =
