@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import {
   signInWithEmailAndPassword,
   signInWithPopup,
@@ -26,7 +26,7 @@ const getFriendlyErrorMessage = (code: string) => {
   }
 };
 
-export default function Login() {
+function LoginContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const redirectPath = searchParams.get("redirect") || "/";
@@ -67,7 +67,7 @@ export default function Login() {
   return (
     <div className="min-h-screen flex items-center justify-center px-4">
       <div className="max-w-md w-full space-y-5 bg-white/5 p-8 rounded-2xl backdrop-blur-md border border-white/10">
-        <h1 className="text-3xl font-bold text-center text-red-500">
+        <h1 className="text-3xl font-bold text-center text-infra">
           Welcome Back
         </h1>
 
@@ -97,7 +97,7 @@ export default function Login() {
 
         <button
           onClick={handleEmailLogin}
-          className="w-full bg-red-500 hover:bg-red-600 transition p-3 rounded-xl font-semibold"
+          className="w-full bg-infra hover:brightness-110 transition p-3 rounded-xl font-semibold text-white"
         >
           Login
         </button>
@@ -123,3 +123,16 @@ export default function Login() {
     </div>
   );
 }
+
+export default function Login() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex flex-col items-center justify-center bg-black text-gray-500">
+        <div className="w-10 h-10 border-2 border-infra border-t-transparent rounded-full animate-spin mb-4" />
+        <p className="animate-pulse">Loading secure gateway...</p>
+      </div>
+    }>
+      <LoginContent />
+    </Suspense>
+  );
+}

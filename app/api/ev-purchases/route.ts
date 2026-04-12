@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { getDb } from "@/lib/sqlite";
 
 export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
 
 // Detect table name
 function findTableName(db: any): string {
