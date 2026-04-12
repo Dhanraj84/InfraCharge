@@ -3,6 +3,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { auth } from "@/lib/firebase";
 import { onAuthStateChanged, User } from "firebase/auth";
+import { syncUserToFirestore } from "@/lib/userActions";
 
 interface AuthContextType {
   user: User | null;
@@ -19,8 +20,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (u) => {
+    const unsubscribe = onAuthStateChanged(auth, async (u) => {
       setUser(u);
+      
+      if (u) {
+        // Automatically sync profile & vehicle on login/re-auth
+        await syncUserToFirestore(u);
+      }
+      
       setLoading(false);
     });
 

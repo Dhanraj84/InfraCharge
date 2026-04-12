@@ -3,8 +3,8 @@ import { db } from "./firebase";
 import { User } from "firebase/auth";
 
 /**
- * Synchronizes a user profile to the Firestore 'users' collection.
- * Uses setDoc with merge: true to update fields without overwriting everything.
+ * Synchronizes a user profile and their selected vehicle to Firestore.
+ * Handles bi-directional sync: pushes local vehicle to cloud, or pulls cloud vehicle to local.
  */
 export async function syncUserToFirestore(user: User) {
   if (!user) return;
@@ -12,17 +12,36 @@ export async function syncUserToFirestore(user: User) {
   try {
     const userRef = doc(db, "users", user.uid);
     
-    await setDoc(userRef, {
+    // 1. Get current local vehicle
+    const localVehicleStr = typeof window !== "undefined" ? localStorage.getItem("confirmedVehicle") : null;
+    const localVehicle = localVehicleStr ? JSON.parse(localVehicleStr) : null;
+
+    // 2. Update Firestore with user info and local vehicle (if exists)
+    const updateData: any = {
       uid: user.uid,
       email: user.email,
       displayName: user.displayName || "New User",
       photoURL: user.photoURL || null,
       lastLogin: serverTimestamp(),
-      // We don't set createdAt here to avoid overwriting it.
-      // If we wanted to set it once, we could use a batch or check existence first.
-    }, { merge: true });
+    };
+
+    if (localVehicle) {
+      updateData.selectedVehicle = localVehicle;
+    }
+
+    await setDoc(userRef, updateData, { merge: true });
+
+    // 3. Pull from Firestore if local is empty (for new device/login)
+    if (!localVehicle) {
+      const { getDoc } = await import("firebase/firestore");
+      const docSnap = await getDoc(userRef);
+      if (docSnap.exists() && docSnap.data().selectedVehicle) {
+        localStorage.setItem("confirmedVehicle", JSON.stringify(docSnap.data().selectedVehicle));
+        console.log("Vehicle pulled from Firestore to localStorage.");
+      }
+    }
     
-    console.log(`User ${user.uid} synced to Firestore successfully.`);
+    console.log(`User ${user.uid} profile & vehicle synced successfully.`);
   } catch (error) {
     console.error("Error syncing user to Firestore:", error);
   }

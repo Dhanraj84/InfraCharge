@@ -14,15 +14,24 @@ type Vehicle = {
 };
 
 export default function SelectVehiclePage() {
+  const { user } = useAuth();
   const [category, setCategory] = useState<"2W" | "3W" | "4W">("2W");
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
   const [selected, setSelected] = useState<Vehicle | null>(null);
   const [loading, setLoading] = useState(false);
   const [confirmed, setConfirmed] = useState(false);
 
-  const handleConfirm = () => {
+  const handleConfirm = async () => {
     if (!selected) return;
+    
+    // Save locally
     localStorage.setItem("confirmedVehicle", JSON.stringify(selected));
+    
+    // Save to Cloud if logged in
+    if (user) {
+      await syncUserToFirestore(user);
+    }
+    
     setConfirmed(true);
     setTimeout(() => setConfirmed(false), 3000);
   };
