@@ -75,7 +75,7 @@ p:not(.maptiler-popup-content p):not(.custom-map-marker p),
 span:not(.maptiler-popup-content span):not(.custom-map-marker span),
 li:not(.maptiler-popup-content li):not(.custom-map-marker li),
 label,
-a {
+a:not(.btn) {
   color: var(--text-main) !important;
   background-color: transparent !important;
 }

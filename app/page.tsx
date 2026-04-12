@@ -48,7 +48,7 @@ export default function Home() {
             </div>
             
             <div className="flex flex-wrap justify-center md:justify-start gap-4 pt-4">
-              <Link href="/where-to-build" className="btn btn-primary px-10 py-5 text-xl rounded-2xl shadow-[0_15px_30px_rgba(255,77,79,0.25)] hover:-translate-y-2 transition-all duration-300">
+              <Link href="/where-to-build" className="btn btn-primary px-10 py-5 text-xl rounded-2xl shadow-[0_15px_30px_rgba(255,77,79,0.3)] hover:shadow-[0_20px_40px_rgba(255,77,79,0.4)] hover:-translate-y-1 transition-all duration-300">
                 Let's Go →
               </Link>
             </div>
@@ -99,8 +99,8 @@ export default function Home() {
               </p>
             </div>
             
-            <Link href="/route-planner" className="btn btn-outline border-blue-500/40 text-blue-400 hover:bg-blue-500 hover:text-white px-10 py-5 text-xl rounded-2xl w-full sm:w-fit text-center transition-all duration-300">
-              Start Planning →
+            <Link href="/route-planner" className="btn btn-primary px-10 py-5 text-xl rounded-2xl shadow-[0_15px_30px_rgba(255,77,79,0.3)] hover:shadow-[0_20px_40px_rgba(255,77,79,0.4)] hover:-translate-y-1 transition-all duration-300">
+              Let's Go →
             </Link>
           </div>
         </motion.section>
@@ -124,7 +124,7 @@ export default function Home() {
               </p>
             </div>
             
-            <Link href="/find-charging" className="btn btn-outline border-primary/40 text-primary hover:bg-primary hover:text-white px-10 py-5 text-xl rounded-2xl w-full sm:w-fit text-center transition-all duration-300">
+            <Link href="/find-charging" className="btn btn-primary px-10 py-5 text-xl rounded-2xl shadow-[0_15px_30px_rgba(255,77,79,0.3)] hover:shadow-[0_20px_40px_rgba(255,77,79,0.4)] hover:-translate-y-1 transition-all duration-300">
               Let's Go →
             </Link>
           </div>
