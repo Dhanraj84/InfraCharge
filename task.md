@@ -9,9 +9,13 @@
     - [x] Update energy model calculations with real battery capacity
 - [x] Update `app/co2-savings/page.tsx` to reflect selected vehicle
     - [x] Load confirmed vehicle from local storage
-    - [x] Sync initial state with vehicle category
-- [x] Implement Robust Amenities Fix
-    - [x] Create `lib/amenities-cache.ts` for SQLite persistence
-    - [x] Update `app/api/amenities-bulk/route.ts` with cache and retries
+    - [x] Create implementation plan
+- [x] Obtain user approval
+- [x] Implement Sync Logic
+    - [x] Create `lib/userActions.ts` helper
+    - [x] Update `app/signup/page.tsx` handlers
+    - [x] Update `app/login/page.tsx` handlers
+- [x] Verify Firestore writes
+- [x] Final walkthrough
     - [x] Update `app/route-planner/page.tsx` with staggered fetching
 - [x] Verify total system stability

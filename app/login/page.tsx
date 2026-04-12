@@ -7,6 +7,7 @@ import {
 } from "firebase/auth";
 import { auth, googleProvider } from "@/lib/firebase";
 import { useRouter } from "next/navigation";
+import { syncUserToFirestore } from "@/lib/userActions";
 
 export default function Login() {
   const router = useRouter();
@@ -17,7 +18,11 @@ export default function Login() {
   const handleEmailLogin = async () => {
     try {
       setError("");
-      await signInWithEmailAndPassword(auth, email, password);
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      
+      // Sync to Firestore
+      await syncUserToFirestore(userCredential.user);
+
       router.push("/");
     } catch (err: any) {
       setError(err.message);
@@ -27,7 +32,11 @@ export default function Login() {
   const handleGoogleLogin = async () => {
     try {
       setError("");
-      await signInWithPopup(auth, googleProvider);
+      const result = await signInWithPopup(auth, googleProvider);
+      
+      // Sync to Firestore
+      await syncUserToFirestore(result.user);
+
       router.push("/");
     } catch (err: any) {
       setError(err.message);

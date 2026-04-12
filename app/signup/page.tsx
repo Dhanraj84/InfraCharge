@@ -8,6 +8,7 @@ import {
 } from "firebase/auth";
 import { auth, googleProvider } from "@/lib/firebase";
 import { useRouter } from "next/navigation";
+import { syncUserToFirestore } from "@/lib/userActions";
 
 export default function Signup() {
   const router = useRouter();
@@ -30,6 +31,9 @@ export default function Signup() {
         displayName: name,
       });
 
+      // Sync to Firestore
+      await syncUserToFirestore(userCredential.user);
+
       router.push("/");
     } catch (err: any) {
       setError(err.message);
@@ -39,7 +43,11 @@ export default function Signup() {
   const handleGoogleSignup = async () => {
     try {
       setError("");
-      await signInWithPopup(auth, googleProvider);
+      const result = await signInWithPopup(auth, googleProvider);
+      
+      // Sync to Firestore
+      await syncUserToFirestore(result.user);
+
       router.push("/");
     } catch (err: any) {
       setError(err.message);
