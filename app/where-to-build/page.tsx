@@ -764,26 +764,29 @@ popup.addTo(map);
     }
 
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_ML_API_URL || "http://127.0.0.1:8000";
+      // Use the Render URL as the primary production fallback
+      const apiUrl = process.env.NEXT_PUBLIC_ML_API_URL || "https://infracharge.onrender.com";
+      
+      console.log("Connecting to ML Server unit at:", apiUrl);
+
       const res = await fetch(
         `${apiUrl}/solar-analysis?land_area=${landArea}`
       );
 
-      // ✅ CHECK RESPONSE
       if (!res.ok) {
-        throw new Error("API failed");
+        const errorText = await res.text();
+        console.error("ML Server responded with error:", errorText);
+        throw new Error(`API failed with status ${res.status}`);
       }
 
       const data = await res.json();
-
-      // ✅ SET DATA
       setSolarPanels(data.total_panels);
       setSolarEnergyKwh(data.energy_generated_kW);
       setEvsFromSolar(data.evs_supported_per_day);
 
     } catch (err) {
-      console.error("REAL ERROR:", err);
-      alert("ML server error");
+      console.error("CRITICAL ML ERROR:", err);
+      alert("ML Analysis Server is currently unavailable. Please ensure the backend is running on Render.");
     }
   }}
 >
