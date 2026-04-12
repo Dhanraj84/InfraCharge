@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, Variants } from "framer-motion";
 import { Zap, MapPin, BarChart3, Search } from "lucide-react";
 
 const features = [
@@ -31,7 +31,7 @@ const features = [
 ];
 
 
-const cardVariants = {
+const cardVariants: Variants = {
   hidden: { opacity: 0, y: 20 },
   visible: (i: number) => ({
     opacity: 1,
