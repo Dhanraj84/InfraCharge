@@ -24,14 +24,22 @@ export default function SelectVehiclePage() {
   const [confirmed, setConfirmed] = useState(false);
 
   const handleConfirm = async () => {
-    if (!selected) return;
+    if (!selected) {
+      console.warn("Vehicle Selection: No vehicle selected to confirm.");
+      return;
+    }
+    
+    console.log("Vehicle Selection: Confirming vehicle...", selected.name);
     
     // Save locally
     localStorage.setItem("confirmedVehicle", JSON.stringify(selected));
     
     // Save to Cloud if logged in
     if (user) {
+      console.log("Vehicle Selection: User logged in, triggering cloud sync...");
       await syncUserToFirestore(user);
+    } else {
+      console.log("Vehicle Selection: No user logged in, saved to localStorage only.");
     }
     
     setConfirmed(true);

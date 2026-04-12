@@ -1,4 +1,4 @@
-import { doc, setDoc, serverTimestamp } from "firebase/firestore";
+import { doc, setDoc, getDoc, serverTimestamp } from "firebase/firestore";
 import { db } from "./firebase";
 import { User } from "firebase/auth";
 
@@ -7,16 +7,26 @@ import { User } from "firebase/auth";
  * Handles bi-directional sync: pushes local vehicle to cloud, or pulls cloud vehicle to local.
  */
 export async function syncUserToFirestore(user: User) {
-  if (!user) return;
+  if (!user) {
+    console.warn("Sync: No user provided to syncUserToFirestore.");
+    return;
+  }
 
   try {
     const userRef = doc(db, "users", user.uid);
+    console.log(`Sync: Starting sync for user ${user.uid}...`);
     
     // 1. Get current local vehicle
     const localVehicleStr = typeof window !== "undefined" ? localStorage.getItem("confirmedVehicle") : null;
     const localVehicle = localVehicleStr ? JSON.parse(localVehicleStr) : null;
 
-    // 2. Update Firestore with user info and local vehicle (if exists)
+    if (localVehicle) {
+      console.log("Sync: Found local vehicle in localStorage:", localVehicle.name);
+    } else {
+      console.log("Sync: No local vehicle found in localStorage.");
+    }
+
+    // 2. Prepare update data
     const updateData: any = {
       uid: user.uid,
       email: user.email,
@@ -29,20 +39,29 @@ export async function syncUserToFirestore(user: User) {
       updateData.selectedVehicle = localVehicle;
     }
 
+    // 3. Write to Firestore
+    console.log("Sync: Writing profile to Firestore...");
     await setDoc(userRef, updateData, { merge: true });
+    console.log("Sync: Firestore write successful.");
 
-    // 3. Pull from Firestore if local is empty (for new device/login)
+    // 4. Pull from Firestore if local is empty (for new device/login)
     if (!localVehicle) {
-      const { getDoc } = await import("firebase/firestore");
+      console.log("Sync: Local vehicle is empty, checking cloud for saved vehicle...");
       const docSnap = await getDoc(userRef);
       if (docSnap.exists() && docSnap.data().selectedVehicle) {
-        localStorage.setItem("confirmedVehicle", JSON.stringify(docSnap.data().selectedVehicle));
-        console.log("Vehicle pulled from Firestore to localStorage.");
+        const cloudVehicle = docSnap.data().selectedVehicle;
+        localStorage.setItem("confirmedVehicle", JSON.stringify(cloudVehicle));
+        console.log("Sync: Successfully pulled vehicle from cloud:", cloudVehicle.name);
+        
+        // Trigger a page reload to update UI if necessary (optional)
+        // window.location.reload(); 
+      } else {
+        console.log("Sync: No vehicle found in cloud profile either.");
       }
     }
     
-    console.log(`User ${user.uid} profile & vehicle synced successfully.`);
+    console.log(`Sync: Full sync cycle completed for ${user.uid}.`);
   } catch (error) {
-    console.error("Error syncing user to Firestore:", error);
+    console.error("Sync Error: Failed to synchronize user data:", error);
   }
 }
