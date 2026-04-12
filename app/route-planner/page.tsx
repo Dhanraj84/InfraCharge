@@ -158,12 +158,25 @@ const PETROL_PRICE = 105;
 const ICE_KM_PER_L = 15;
 const ICE_CO2_G_PER_KM = 120;
 
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/context/AuthContext";
+
 export default function RoutePlanner() {
+  const router = useRouter();
+  const { user, loading: authLoading } = useAuth();
   const mapRef = useRef<maplibregl.Map | null>(null);
   const [confirmedVehicle, setConfirmedVehicle] = useState<any | null>(null);
 
+  // Auth Guard
+  useEffect(() => {
+    if (!authLoading && !user) {
+      router.replace("/login?redirect=/route-planner");
+    }
+  }, [user, authLoading, router]);
+
   // Load vehicle on mount
   useEffect(() => {
+    // ... existing logic ...
     const saved = localStorage.getItem("confirmedVehicle");
     if (saved) {
       try {

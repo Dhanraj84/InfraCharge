@@ -6,11 +6,31 @@ import {
   signInWithPopup,
 } from "firebase/auth";
 import { auth, googleProvider } from "@/lib/firebase";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { syncUserToFirestore } from "@/lib/userActions";
+
+const getFriendlyErrorMessage = (code: string) => {
+  switch (code) {
+    case "auth/user-not-found":
+      return "You are not registered. Please create an account first.";
+    case "auth/wrong-password":
+      return "Login failed. Incorrect password.";
+    case "auth/invalid-email":
+      return "Please enter a valid email address.";
+    case "auth/too-many-requests":
+      return "Too many failed attempts. Please try again later.";
+    case "auth/popup-closed-by-user":
+      return "Login cancelled.";
+    default:
+      return "Login failed. Please check your credentials.";
+  }
+};
 
 export default function Login() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirectPath = searchParams.get("redirect") || "/";
+  
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -23,9 +43,9 @@ export default function Login() {
       // Sync to Firestore
       await syncUserToFirestore(userCredential.user);
 
-      router.push("/");
+      router.push(redirectPath);
     } catch (err: any) {
-      setError(err.message);
+      setError(getFriendlyErrorMessage(err.code));
     }
   };
 
@@ -37,9 +57,10 @@ export default function Login() {
       // Sync to Firestore
       await syncUserToFirestore(result.user);
 
-      router.push("/");
+      router.push(redirectPath);
     } catch (err: any) {
-      setError(err.message);
+      console.error(err);
+      setError(getFriendlyErrorMessage(err.code));
     }
   };
 

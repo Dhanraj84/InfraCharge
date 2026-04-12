@@ -43,10 +43,22 @@ function getPower(connections?: OCM["Connections"]) {
   return max > 0 ? `${max} kW` : null;
 }
 
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/context/AuthContext";
+
 export default function FindChargingPage() {
+  const router = useRouter();
+  const { user, loading: authLoading } = useAuth();
   maptilersdk.config.apiKey = process.env.NEXT_PUBLIC_MAPTILER_KEY || "";
 
   const GRAPH_KEY = process.env.NEXT_PUBLIC_GRAPHHOPPER_KEY;
+
+  // Auth Guard
+  useEffect(() => {
+    if (!authLoading && !user) {
+      router.replace("/login?redirect=/find-charging");
+    }
+  }, [user, authLoading, router]);
 
   const [query, setQuery] = useState("");
   const [chargers, setChargers] = useState<OCM[]>([]);

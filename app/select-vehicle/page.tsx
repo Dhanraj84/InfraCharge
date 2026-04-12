@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { syncUserToFirestore } from "@/lib/userActions";
 
@@ -16,12 +17,29 @@ type Vehicle = {
 };
 
 export default function SelectVehiclePage() {
-  const { user } = useAuth();
+  const router = useRouter();
+  const { user, loading: authLoading } = useAuth();
   const [category, setCategory] = useState<"2W" | "3W" | "4W">("2W");
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
   const [selected, setSelected] = useState<Vehicle | null>(null);
   const [loading, setLoading] = useState(false);
   const [confirmed, setConfirmed] = useState(false);
+
+  // Auth Guard
+  useEffect(() => {
+    if (!authLoading && !user) {
+      router.replace("/login?redirect=/select-vehicle");
+    }
+  }, [user, authLoading, router]);
+
+  if (authLoading) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[60vh] text-gray-400">
+        <div className="w-12 h-12 border-4 border-red-500 border-t-transparent rounded-full animate-spin mb-4"></div>
+        <p className="animate-pulse">Securing your connection...</p>
+      </div>
+    );
+  }
 
   const handleConfirm = async () => {
     if (!selected) {
