@@ -17,6 +17,23 @@ export default function CO2Dashboard() {
   const [result, setResult] = useState<{money:number; co2:number}|null>(null);
 
   const [hasCalculated, setHasCalculated] = useState(false);
+  const [confirmedVehicle, setConfirmedVehicle] = useState<any | null>(null);
+
+  useEffect(() => {
+    const saved = localStorage.getItem("confirmedVehicle");
+    if (saved) {
+      try {
+        const v = JSON.parse(saved);
+        setConfirmedVehicle(v);
+        // Adjust default KMPL based on ICE equivalent of the category
+        if (v.category === "2W") setKmpl(45); // Bikes usually get 40-50 kmpl
+        else if (v.category === "3W") setKmpl(25); // Rickshaws ~20-30
+        else setKmpl(15); // Cars ~15
+      } catch (e) {
+        console.error(e);
+      }
+    }
+  }, []);
 
   const onCalc = async () => {
     // If the user tries to calculate EV against EV, savings are null/zero visually.
@@ -79,7 +96,9 @@ export default function CO2Dashboard() {
           Your <span className="bg-gradient-to-r from-green-400 to-emerald-500 bg-clip-text text-transparent">CO₂ Savings</span>
         </h1>
         <p className="text-muted text-lg max-w-xl mx-auto mt-1">
-          See exactly how much carbon emission and money you save by switching to an EV.
+          {confirmedVehicle 
+            ? `See your impact with your ${confirmedVehicle.name} compared to petrol variants.` 
+            : "See exactly how much carbon emission and money you save by switching to an EV."}
         </p>
       </div>
 

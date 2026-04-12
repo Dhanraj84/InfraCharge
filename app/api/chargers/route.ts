@@ -6,7 +6,8 @@ export async function GET(req: Request) {
 
     const lat = searchParams.get("lat");
     const lon = searchParams.get("lon");
-    const range = searchParams.get("range") || "10"; // 🔥 get range from frontend
+    const range = searchParams.get("range") || "45"; // 🔥 larger range for route checks
+    const maxresults = searchParams.get("maxresults") || "100";
 
     if (!lat || !lon) {
       return NextResponse.json([], { status: 200 });
@@ -17,7 +18,7 @@ export async function GET(req: Request) {
     const url =
       `https://api.openchargemap.io/v3/poi/?output=json` +
       `&latitude=${lat}&longitude=${lon}` +
-      `&distance=${range}&distanceunit=KM&maxresults=50`;
+      `&distance=${range}&distanceunit=KM&maxresults=${maxresults}`;
 
     const response = await fetch(url, {
       headers: {

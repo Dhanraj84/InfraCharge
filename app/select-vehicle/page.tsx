@@ -18,6 +18,14 @@ export default function SelectVehiclePage() {
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
   const [selected, setSelected] = useState<Vehicle | null>(null);
   const [loading, setLoading] = useState(false);
+  const [confirmed, setConfirmed] = useState(false);
+
+  const handleConfirm = () => {
+    if (!selected) return;
+    localStorage.setItem("confirmedVehicle", JSON.stringify(selected));
+    setConfirmed(true);
+    setTimeout(() => setConfirmed(false), 3000);
+  };
 
   useEffect(() => {
     (async () => {
@@ -109,9 +117,14 @@ export default function SelectVehiclePage() {
           </p>
 
           <button
-            className="px-6 py-3 rounded bg-red-500 hover:bg-red-600 transition"
+            onClick={handleConfirm}
+            className={`px-8 py-3 rounded-xl font-bold transition-all duration-300 shadow-lg ${
+              confirmed 
+              ? "bg-green-500 text-white cursor-default" 
+              : "bg-red-500 hover:bg-red-600 text-white hover:-translate-y-1 active:translate-y-0"
+            }`}
           >
-            Confirm Vehicle
+            {confirmed ? "✅ Vehicle Confirmed!" : "Confirm Vehicle"}
           </button>
         </div>
       )}
