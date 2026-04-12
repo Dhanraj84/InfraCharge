@@ -25,14 +25,14 @@ export default function Contact() {
                 <label className="block text-sm font-medium text-muted mb-1 ml-1 scale-95 origin-left">Your Name</label>
                 <input 
                   className="w-full p-4 rounded-xl border border-white/20 dark:border-white/10 bg-white/5 dark:bg-black/20 text-text placeholder:text-muted focus:ring-2 focus:ring-blue-500/50 focus:border-transparent outline-none transition-all" 
-                  placeholder="John Doe" 
+                  placeholder="" 
                 />
               </div>
               <div>
                 <label className="block text-sm font-medium text-muted mb-1 ml-1 scale-95 origin-left">Email Address</label>
                 <input 
                   className="w-full p-4 rounded-xl border border-white/20 dark:border-white/10 bg-white/5 dark:bg-black/20 text-text placeholder:text-muted focus:ring-2 focus:ring-blue-500/50 focus:border-transparent outline-none transition-all" 
-                  placeholder="john@example.com" 
+                  placeholder="" 
                   type="email"
                 />
               </div>
