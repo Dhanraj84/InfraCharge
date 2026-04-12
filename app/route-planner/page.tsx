@@ -1,6 +1,8 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState,useRef  } from "react";
+import { useCallback, useEffect, useMemo, useState, useRef } from "react";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/context/AuthContext";
 import maplibregl from "maplibre-gl";
 import type { LineLayerSpecification } from "maplibre-gl";
 
@@ -157,9 +159,6 @@ const ELECTRICITY_PRICE = 8;
 const PETROL_PRICE = 105;
 const ICE_KM_PER_L = 15;
 const ICE_CO2_G_PER_KM = 120;
-
-import { useRouter } from "next/navigation";
-import { useAuth } from "@/context/AuthContext";
 
 export default function RoutePlanner() {
   const router = useRouter();

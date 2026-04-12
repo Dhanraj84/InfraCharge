@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/context/AuthContext";
 import * as maptilersdk from "@maptiler/sdk";
 import "@maptiler/sdk/dist/maptiler-sdk.css";
 
@@ -42,9 +44,6 @@ function getPower(connections?: OCM["Connections"]) {
   const max = Math.max(...connections.map((c) => c.PowerKW || 0));
   return max > 0 ? `${max} kW` : null;
 }
-
-import { useRouter } from "next/navigation";
-import { useAuth } from "@/context/AuthContext";
 
 export default function FindChargingPage() {
   const router = useRouter();
