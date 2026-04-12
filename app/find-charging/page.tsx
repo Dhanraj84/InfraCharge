@@ -56,6 +56,19 @@ export default function FindChargingPage() {
   const [selectedStationId, setSelectedStationId] = useState<number | null>(null);
   const [routingStationId, setRoutingStationId] = useState<number | null>(null);
   const [travelInfos, setTravelInfos] = useState<Record<number, { distanceKm: number; timeMin: number }>>({});
+  const [confirmedVehicle, setConfirmedVehicle] = useState<any | null>(null);
+
+  // ---------- Load Vehicle ----------
+  useEffect(() => {
+    const saved = localStorage.getItem("confirmedVehicle");
+    if (saved) {
+      try {
+        setConfirmedVehicle(JSON.parse(saved));
+      } catch (err) {
+        console.error("Failed to parse vehicle", err);
+      }
+    }
+  }, []);
 
   const mapRef = useRef<maptilersdk.Map | null>(null);
   const startMarkerRef = useRef<maptilersdk.Marker | null>(null);
@@ -409,9 +422,15 @@ export default function FindChargingPage() {
     <div className="min-h-screen bg-bg text-text">
       {/* Header & Search */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-10">
-        <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold mb-4">
+        <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold mb-2">
           Find Nearest <span className="text-red-500">Charging Station</span>
         </h1>
+        {confirmedVehicle && (
+          <div className="mb-6 inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-primary text-sm font-semibold backdrop-blur-sm animate-pulse">
+            <span className="w-2 h-2 rounded-full bg-primary" />
+            Personalized for Your {confirmedVehicle.name}
+          </div>
+        )}
         <div className="flex flex-col sm:flex-row gap-3">
           <input
             value={query}

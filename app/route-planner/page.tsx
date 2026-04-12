@@ -811,7 +811,19 @@ const navigateToStation = async (station: any) => {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-10 grid grid-cols-1 lg:grid-cols-[65%_35%] gap-6 items-start">
       <section className="flex flex-col gap-4 lg:sticky lg:top-[90px] lg:h-[calc(100vh-110px)] relative">
         <header className="shrink-0">
-          <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold">EV Route Planner</h1>
+          <div className="flex items-center justify-between mb-8">
+            <h1 className="text-2xl md:text-3xl font-extrabold text-primary uppercase tracking-tighter">
+              Plan EV Trip
+            </h1>
+            {confirmedVehicle && (
+              <div className="flex flex-col items-end">
+                <span className="text-[10px] text-muted uppercase tracking-widest mb-1">Active Vehicle</span>
+                <div className="px-3 py-1 rounded-lg bg-primary/10 border border-primary/20 text-text text-sm font-bold backdrop-blur-sm">
+                  {confirmedVehicle.name}
+                </div>
+              </div>
+            )}
+          </div>
           <p className="text-sm sm:text-base md:text-lg opacity-90 mt-1">
             Plan your trip with real-time traffic, weather updates, battery prediction & charging stops.
           </p>
