@@ -53,80 +53,80 @@ export default function Navbar() {
           </span>
         </Link>
 
-        {/* Desktop Nav */}
-        <nav className="hidden lg:flex items-center gap-6 xl:gap-8">
-          {NAV_LINKS.map((link) => {
-            const isActive = pathname === link.href;
-            return (
-              <Link
-                key={link.name}
-                href={link.href}
-                className={`relative flex items-center text-sm font-medium transition-colors duration-300 ease-in-out ${
-                  isActive ? "text-infra" : "text-text"
-                } after:content-[''] after:absolute after:-bottom-1 after:left-0 after:h-[2px] after:bg-infra after:transition-all after:duration-300 after:ease-in-out ${
-                  isActive ? "after:w-full" : "after:w-0 hover:after:w-full"
-                }`}
-              >
-                {link.name}
-              </Link>
-            );
-          })}
-        </nav>
-
-        {/* Desktop Auth & Location Actions */}
-        <div className="hidden sm:flex items-center gap-3 shrink-0">
-          <LocationButton />
-          
-          {user ? (
-            <div className="relative group">
-              <button className="w-10 h-10 rounded-full overflow-hidden border border-border bg-card shadow-sm hover:border-infra transition-colors flex items-center justify-center">
-                {user.photoURL ? (
-                  <img
-                    src={user.photoURL}
-                    alt="Profile"
-                    className="w-full h-full object-cover"
-                  />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center bg-infra text-white font-bold text-sm">
-                    {user.email?.charAt(0).toUpperCase()}
-                  </div>
-                )}
-              </button>
-
-              {/* HOVER DROPDOWN */}
-              <div className="absolute right-0 mt-2 w-48 bg-card border border-border rounded-xl shadow-xl opacity-0 invisible group-hover:visible group-hover:opacity-100 transition-all duration-200 z-50 overflow-hidden">
+        {/* Right Side: Nav + Auth */}
+        <div className="flex items-center gap-6 xl:gap-10">
+          {/* Desktop Nav (Now on the right) */}
+          <nav className="hidden lg:flex items-center gap-6 xl:gap-8">
+            {NAV_LINKS.map((link) => {
+              const isActive = pathname === link.href;
+              return (
                 <Link
-                  href="/profile"
-                  className="block px-4 py-3 text-sm text-text hover:bg-muted/30 transition-colors"
+                  key={link.name}
+                  href={link.href}
+                  className={`relative flex items-center text-sm font-medium transition-colors duration-300 ease-in-out ${
+                    isActive ? "text-infra" : "text-text"
+                  } after:content-[''] after:absolute after:-bottom-1 after:left-0 after:h-[2px] after:bg-infra after:transition-all after:duration-300 after:ease-in-out ${
+                    isActive ? "after:w-full" : "after:w-0 hover:after:w-full"
+                  }`}
                 >
-                  Update Profile
+                  {link.name}
                 </Link>
+              );
+            })}
+          </nav>
 
-                <button
-                  onClick={() => signOut(auth)}
-                  className="block w-full text-left px-4 py-3 text-sm text-red-500 hover:bg-red-500/10 transition-colors"
-                >
-                  Logout
+          {/* Desktop Auth */}
+          <div className="hidden sm:flex items-center gap-3 shrink-0">
+            {user ? (
+              <div className="relative group">
+                <button className="w-10 h-10 rounded-full overflow-hidden border border-border bg-card shadow-sm hover:border-infra transition-colors flex items-center justify-center">
+                  {user.photoURL ? (
+                    <img
+                      src={user.photoURL}
+                      alt="Profile"
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center bg-infra text-white font-bold text-sm">
+                      {user.email?.charAt(0).toUpperCase()}
+                    </div>
+                  )}
                 </button>
-              </div>
-            </div>
-          ) : (
-            <Link href="/login" className="px-5 py-2 rounded-xl border border-infra text-infra text-sm font-medium hover:bg-infra hover:text-white transition-all duration-300 shadow-[0_0_10px_rgba(255,77,79,0)] hover:shadow-[0_0_15px_rgba(255,77,79,0.3)]">
-              Login
-            </Link>
-          )}
-        </div>
 
-        {/* Mobile Toggle & Auth (For Phones) */}
-        <div className="flex lg:hidden items-center gap-3">
-           <div className="sm:hidden"><LocationButton /></div>
-           <button 
-             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-             className="p-2 text-text hover:text-infra transition-colors rounded-lg bg-white/5 border border-border/50"
-             aria-label="Toggle Menu"
-           >
-             {mobileMenuOpen ? <X className="w-5 h-5"/> : <Menu className="w-5 h-5" />}
-           </button>
+                {/* HOVER DROPDOWN */}
+                <div className="absolute right-0 mt-2 w-48 bg-card border border-border rounded-xl shadow-xl opacity-0 invisible group-hover:visible group-hover:opacity-100 transition-all duration-200 z-50 overflow-hidden">
+                  <Link
+                    href="/profile"
+                    className="block px-4 py-3 text-sm text-text hover:bg-muted/30 transition-colors"
+                  >
+                    Update Profile
+                  </Link>
+
+                  <button
+                    onClick={() => signOut(auth)}
+                    className="block w-full text-left px-4 py-3 text-sm text-red-500 hover:bg-red-500/10 transition-colors"
+                  >
+                    Logout
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <Link href="/login" className="px-5 py-2 rounded-xl border border-infra text-infra text-sm font-medium hover:bg-infra hover:text-white transition-all duration-300 shadow-[0_0_10px_rgba(255,77,79,0)] hover:shadow-[0_0_15px_rgba(255,77,79,0.3)]">
+                Login
+              </Link>
+            )}
+          </div>
+
+          {/* Mobile Toggle */}
+          <div className="flex lg:hidden items-center gap-3">
+             <button 
+               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+               className="p-2 text-text hover:text-infra transition-colors rounded-lg bg-white/5 border border-border/50"
+               aria-label="Toggle Menu"
+             >
+               {mobileMenuOpen ? <X className="w-5 h-5"/> : <Menu className="w-5 h-5" />}
+             </button>
+          </div>
         </div>
       </div>
 
