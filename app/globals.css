@@ -70,14 +70,18 @@
 main,
 section,
 article,
-div:not(.maptiler-popup-content):not(.custom-map-marker),
-p:not(.maptiler-popup-content p):not(.custom-map-marker p),
-span:not(.maptiler-popup-content span):not(.custom-map-marker span),
-li:not(.maptiler-popup-content li):not(.custom-map-marker li),
+div:not(.maptiler-popup-content):not(.custom-map-marker):not(.bg-solid),
+p:not(.maptiler-popup-content p):not(.custom-map-marker p):not(.bg-solid),
+span:not(.maptiler-popup-content span):not(.custom-map-marker span):not(.bg-solid),
+li:not(.maptiler-popup-content li):not(.custom-map-marker li):not(.bg-solid),
 label,
 a:not(.btn) {
   color: var(--text-main) !important;
   background-color: transparent !important;
+}
+
+.bg-solid {
+  background-color: var(--bg-main) !important;
 }
 
   /* FORCE ALL HEADINGS TO HOME PAGE STYLE */

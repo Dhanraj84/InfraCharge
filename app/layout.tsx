@@ -29,6 +29,8 @@ export const metadata = {
   },
 };
 
+import InstallPrompt from "./(components)/InstallPrompt";
+
 export default function RootLayout({
   children,
 }: {
@@ -49,6 +51,7 @@ export default function RootLayout({
               <MainWrapper>
                 {children}
               </MainWrapper>
+              <InstallPrompt />
             </div>
           </AuthProvider>
         </ThemeProvider>

@@ -135,8 +135,7 @@ export default function Navbar() {
       {/* MOBILE MENU DROPDOWN (OUTSIDE HEADER TO PREVENT COMPOSITING BUG) */}
       {mobileMenuOpen && (
         <div 
-          className="lg:hidden fixed top-[70px] left-0 w-full h-[calc(100vh-70px)] bg-[#0A0A0A] overflow-y-auto animate-in slide-in-from-top-2 duration-300 z-[99999]"
-          style={{ backgroundColor: '#0A0A0A' }}
+          className="lg:hidden fixed top-[70px] left-0 w-full h-[calc(100vh-70px)] bg-black bg-solid overflow-y-auto animate-in slide-in-from-top-2 duration-300 z-[99999]"
         >
           <nav className="flex flex-col px-4 py-6 space-y-4">
             {NAV_LINKS.map((link) => {
