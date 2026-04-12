@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useAuth } from "@/context/AuthContext";
+import { syncUserToFirestore } from "@/lib/userActions";
 
 type Vehicle = {
   id: number;
