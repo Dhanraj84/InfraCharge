@@ -20,15 +20,15 @@ InfraCharge is a high-performance, data-driven platform designed to revolutioniz
 
 ### 🔍 Smart Charging Locator
 Find the nearest charging stations with real-time occupancy and amenity insights.
-![Nearest Station Demo]
+
 
 ### 🧭 Intelligent Route Planner
 Navigate worry-free with battery-aware routing and optimized charging stops.
-![Route Planner Demo]
+
 
 ### 🧠 AI Infrastructure Engine
 Identify high-demand zones using geospatial analysis and AI logic.
-![Infrastructure Planner Demo]
+
 
 ---
 
