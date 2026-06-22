@@ -20,17 +20,18 @@ InfraCharge is a high-performance, data-driven platform designed to revolutioniz
 
 ### 🔍 Smart Charging Locator
 Find the nearest charging stations with real-time occupancy and amenity insights.
+### 🔍 Smart Charging Locator
 
+Find the nearest charging stations with real-time occupancy and amenity insights.
 
 ### 🧭 Intelligent Route Planner
+
 Navigate worry-free with battery-aware routing and optimized charging stops.
 
-
 ### 🧠 AI Infrastructure Engine
+
 Identify high-demand zones using geospatial analysis and AI logic.
 
-
----
 
 ## 🚀 What Problem Does It Solve?
 
@@ -89,7 +90,8 @@ EV adoption is skyrocketing, but infrastructure remains fragmented. InfraCharge 
 
 - **Frontend (Next.js)**: High-performance UI + Interactive Map Rendering.
 - **Backend (Firebase + PostgreSQL)**: Secure Auth + Scalable Data Storage.
-- **ML Engine (Python)**: Specialized (Demand) Prediction Engine.
+* **ML Engine (Python)**: Specialized (Demand) Prediction Engine.
+
 - **APIs**: Mapbox GL, OpenWeather, OpenChargeMap.
 
 ---

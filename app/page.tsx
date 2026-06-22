@@ -7,6 +7,8 @@ import Features from "./(components)/Home/Features";
 import HowItWorks from "./(components)/Home/HowItWorks";
 import Stats from "./(components)/Home/Stats";
 import WhyInfraCharge from "./(components)/Home/WhyInfraCharge";
+import ChatbotWidget from "./(components)/ChatbotWidget";
+
 
 export default function Home() {
   const sectionVariants: Variants = {
@@ -183,6 +185,9 @@ export default function Home() {
             <p className="text-xs text-muted/50 mb-10">Built with ❤️ by Dhanraj 🚀</p>
           </div>
         </footer>
+
+        {/* Persistent Premium AI Chatbot Widget */}
+        <ChatbotWidget />
 
       </div>
     </div>
