@@ -59,3 +59,36 @@ export function setCachedAmenities(stationId: string, amenities: Amenity[]) {
     console.error("Cache write failed:", err);
   }
 }
+
+import { getCache, setCache } from "@/lib/redis";
+
+const SEVEN_DAYS_SECONDS = 7 * 24 * 60 * 60;
+
+/**
+ * High-performance Redis + SQLite amenities lookup.
+ * Tries Redis first; falls back to SQLite if Redis miss or unavailable.
+ */
+export async function getAmenitiesWithRedis(stationId: string): Promise<Amenity[] | null> {
+  // 1. Try Redis
+  const redisData = await getCache<Amenity[]>(`amenities:${stationId}`);
+  if (redisData) return redisData;
+
+  // 2. Fallback to SQLite cache
+  const sqliteData = getCachedAmenities(stationId);
+  if (sqliteData) {
+    // Populate Redis cache asynchronously
+    setCache(`amenities:${stationId}`, sqliteData, SEVEN_DAYS_SECONDS).catch(() => {});
+    return sqliteData;
+  }
+
+  return null;
+}
+
+/**
+ * Save amenities to both Redis and SQLite caches.
+ */
+export async function setAmenitiesWithRedis(stationId: string, amenities: Amenity[]) {
+  setCachedAmenities(stationId, amenities);
+  await setCache(`amenities:${stationId}`, amenities, SEVEN_DAYS_SECONDS);
+}
+

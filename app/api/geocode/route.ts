@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { getCache, setCache } from "@/lib/redis";
 
 export async function GET(request: Request) {
   try {
@@ -12,12 +13,27 @@ export async function GET(request: Request) {
       );
     }
 
-    // Dummy response for now (safe for CI)
-    return NextResponse.json({
+    const cacheKey = `geocode:${address.toLowerCase().trim()}`;
+    const cachedResult = await getCache(cacheKey);
+
+    if (cachedResult) {
+      return NextResponse.json({
+        ...cachedResult,
+        source: "redis-cache",
+      });
+    }
+
+    // Response object
+    const responseData = {
       address,
       latitude: 0,
       longitude: 0,
-    });
+    };
+
+    // Cache result in Redis for 24 hours (86400s)
+    await setCache(cacheKey, responseData, 86400);
+
+    return NextResponse.json(responseData);
   } catch (error) {
     return NextResponse.json(
       { error: "Geocode failed" },
@@ -25,3 +41,4 @@ export async function GET(request: Request) {
     );
   }
 }
+
