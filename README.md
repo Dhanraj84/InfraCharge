@@ -176,36 +176,35 @@ graph TD
 
 ---
  
- ## ⚙️ Getting Started
- 
- ### Prerequisites
- - **Node.js**: v18 or higher
- - **Python**: v3.10 or higher (for ML Server)
- - **Package Manager**: npm or yarn
- - **Firebase**: An active Project setup
- 
- ### Installation
- 1. **Frontend Dependencies**
-    ```bash
-    npm install
-    ```
- 
- 2. **ML Server Setup (Optional)**
-    ```bash
-    cd ml-server
-    pip install -r requirements.txt
-    python solar_weather_api.py
-    ```
- 
- 3. **Environment Setup**
-    Create a `.env.local` file in the root directory and add the template keys provided in our system documentation.
- 
- 4. **Run the development server**
-    ```bash
-    cd ..
-    npm run dev
-    ```
-    Open [http://localhost:3000](http://localhost:3000) to view the application.
+---
+
+## 🧠 Algorithmic & AI Core Capabilities
+
+### 📍 1. Geospatial Demand Clustering & Site Recommendation
+* **Multi-Factor Scoring Engine**: Evaluates locations on a **0–100 scale** using weighted proximity to high-dwell amenities (hospitals `weight: 6`, malls `weight: 5`, transit hubs `weight: 5`).
+* **Competitive Gap Penalty**: Applies a **35% score reduction** to locations near existing charging stations while boosting unserved corridors by **20%**.
+* **State & District Trend Normalization**: Scales location recommendations according to real-world EV registration growth from government data.
+
+### ☀️ 2. Solar Yield & Energy Capacity Prediction
+* **XGBoost ML Pipeline**: Predicts daily solar energy generation (kWh) using irradiance, ambient temperature, module temperature, hour, and month.
+* **Land-to-EV Charging Conversion**: Computes total panel footprint, daily kWh generation capacity, and the exact number of EVs supported per day (`15 kWh/EV`).
+* **Sub-Millisecond Cache Acceleration**: Caches calculation outputs in **Upstash Redis** to bypass redundant computations.
+
+### 💬 3. Hybrid RAG Context Retrieval Engine
+* **SQL Data Injection**: Extracts state & district EV purchase totals directly from SQLite DB before prompting the LLM.
+* **Dual-LLM Failover**: Executes primary query via **Google Gemini 1.5 Flash**, with automatic failover to **OpenAI GPT-4o-mini** if primary limits are reached.
+
+---
+
+## 💡 Key Platform Modules
+
+| Module | Primary Function | Core Technology |
+| :--- | :--- | :--- |
+| **📍 Where To Build** | Intelligent EV charging station location selection & ROI estimator | Next.js + MapTiler + Geospatial Clustering |
+| **⚡ Solar & Energy Planner** | Solar panel yield calculation & EV charging feasibility | FastAPI + XGBoost + Upstash Redis |
+| **🤖 Smart Assist AI** | RAG-backed 24/7 conversational assistant for EV data | Gemini Flash + OpenAI + RAG Pipeline |
+| **🌱 CO₂ Impact Dashboard** | Real-time carbon emission savings tracker | React + Dynamic Impact Formulas |
+
 
 ---
 
