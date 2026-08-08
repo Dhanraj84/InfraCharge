@@ -88,11 +88,69 @@ EV adoption is skyrocketing, but infrastructure remains fragmented. InfraCharge 
 
 ## 🏗️ Architecture Overview
 
-- **Frontend (Next.js)**: High-performance UI + Interactive Map Rendering.
-- **Backend (Firebase + PostgreSQL)**: Secure Auth + Scalable Data Storage.
-* **ML Engine (Python)**: Specialized (Demand) Prediction Engine.
+```mermaid
+graph TD
+    %% Client & Presentation Layer
+    subgraph Client ["🖥️ Client / User Interface"]
+        UI["Next.js 14 Web App<br/>(React 18 + Tailwind CSS + Framer Motion)"]
+        Map["Map Engine<br/>(Mapbox GL + MapLibre + MapTiler)"]
+    end
 
-- **APIs**: Mapbox GL, OpenWeather, OpenChargeMap.
+    %% Application Server & API Routes
+    subgraph NextServer ["⚡ Next.js Fullstack Server (Node.js)"]
+        Routes["API Routes<br/>(/api/chat, /api/geocode, /api/solar-from-area, /api/ev-purchases)"]
+        RAG["RAG Engine<br/>(Local DB Context Retrieval + LLM Fallback)"]
+    end
+
+    %% High-Speed Caching Layer
+    subgraph CacheLayer ["⚡ High-Speed Cache"]
+        Redis["Upstash Redis Cache<br/>(Geocode, Solar Calculations, Amenities)"]
+    end
+
+    %% Databases & Storage
+    subgraph Storage ["🗄️ Database & Storage Layer"]
+        Firebase["Firebase Auth & Store"]
+        NeonDB["PostgreSQL (Neon DB)"]
+        SQLite["SQLite DB<br/>(EV Registrations & Amenities)"]
+    end
+
+    %% AI / ML Service
+    subgraph MLEngine ["🧠 Machine Learning Server (Python)"]
+        FastAPI["FastAPI Server<br/>(Uvicorn)"]
+        XGBoost["XGBoost / Scikit-Learn Model<br/>(solar_energy_model.pkl)"]
+    end
+
+    %% External APIs
+    subgraph ExternalAPIs ["🌐 External APIs & Services"]
+        Gemini["Google Gemini API<br/>(Primary Chatbot LLM)"]
+        OpenAI["OpenAI GPT-4o-mini<br/>(Failover LLM)"]
+        OpenChargeMap["OpenChargeMap API"]
+        OpenWeather["OpenWeather API"]
+    end
+
+    %% Connections
+    UI -->|User Interactions| Routes
+    UI -->|Map Rendering| Map
+    Routes <-->|Cache Read/Write| Redis
+    Routes <-->|User Auth| Firebase
+    Routes <-->|Relational Queries| NeonDB
+    Routes <-->|Local Registration Data| SQLite
+    Routes -->|Generative AI Prompts| Gemini
+    Routes -->|LLM Fallback| OpenAI
+    Routes <-->|HTTP Request| FastAPI
+    FastAPI -->|Predict Output| XGBoost
+    Routes -->|Live Charger Data| OpenChargeMap
+    Routes -->|Climate Data| OpenWeather
+```
+
+### Layer Breakdown
+- **Frontend Layer**: Built with **Next.js 14 App Router**, **React 18**, **Tailwind CSS**, and **Framer Motion** for a responsive, dark-mode UI.
+- **Mapping Engine**: Integrates **Mapbox GL**, **MapLibre**, and **MapTiler** for geospatial rendering, route planning, and location pins.
+- **Caching Layer**: **Upstash Redis** provides sub-millisecond RAM caching for geocoding, solar plant analysis, and amenity search.
+- **RAG & GenAI Engine**: Uses a **Hybrid Retrieval-Augmented Generation (RAG)** architecture with **Google Gemini** (Primary) and **OpenAI GPT-4o-mini** (Failover).
+- **ML Prediction Server**: A dedicated **Python FastAPI** microservice hosting an **XGBoost / Scikit-Learn** model for solar & energy capability analysis.
+- **Database Layer**: **Firebase** for authentication, **PostgreSQL (Neon DB)** for core operational data, and **SQLite** for EV registration analytics.
+
 
 ---
  
